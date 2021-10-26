@@ -86,13 +86,13 @@ gltfLoader.load(
 // * LIGHTING
 // Ambient
 const ambientLight = new THREE.AmbientLight()
-ambientLight.intensity = 0.5
+ambientLight.intensity = 0.35
 ambientLight.color = new THREE.Color(`#FFDCED`)
 scene.add(ambientLight)
 
 // Directional
 const sunLight = new THREE.DirectionalLight()
-sunLight.intensity = .6
+sunLight.intensity = 0.2
 sunLight.position.set(-60, 100, 100)
 sunLight.color = new THREE.Color(`#FFF8B4`)
 scene.add(sunLight)
@@ -122,6 +122,7 @@ const renderer = new THREE.WebGLRenderer({
 renderer.outputEncoding = THREE.sRGBEncoding
 renderer.toneMapping = THREE.LinearToneMapping
 renderer.toneMappingExposure = 1.05
+renderer.physicallyCorrectLights = true
 renderer.setSize(resolution.width, resolution.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
@@ -147,25 +148,30 @@ window.addEventListener(`resize`, () =>
 })
 
 // * POST-PROCESSING
+// effect composer
 const effectComposer = new EffectComposer(renderer)
 effectComposer.setSize(resolution.width, resolution.height)
 effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
+// render pass
 const renderPass = new RenderPass(scene, camera)
 effectComposer.addPass(renderPass)
 
+// film pass
 const filmPass = new FilmPass(
-    0.5,
+    1,
     0.025,
     648,
     false
 )
+filmPass.renderToScreen = true
 effectComposer.addPass(filmPass)
 
+// bloom pass
 const bloomPass = new UnrealBloomPass()
 bloomPass.threshold = 0.22
 bloomPass.radius = 8.23
-bloomPass.strength = 0.048
+bloomPass.strength = 0.1
 effectComposer.addPass(bloomPass)
 
 // * ANIMATE
@@ -193,7 +199,7 @@ const update = (time) =>
 
     // Update Renderer and Effect Composer
     // renderer.render(scene, camera)
-    effectComposer.render(deltaTime)
+    effectComposer.render()
     renderer.setSize(resolution.width, resolution.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     effectComposer.setSize(resolution.width, resolution.width)
@@ -220,3 +226,7 @@ gui
 gui
 .add(sunLight, `intensity`).name(`Sun Light Intensity`)
 .min(0.1).max(3).step(0.001)
+
+gui
+.add(bloomPass, `strength`).name(`Bloom Strength`)
+.min(0).max(1).step(0.001)
