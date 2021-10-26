@@ -109,7 +109,7 @@ const camera = new THREE.PerspectiveCamera(
     50,
     resolution.width / resolution.height,
     0.01,
-    2000
+    200
 )
 camera.position.set(-15, 8, 21)
 scene.add(camera)
@@ -159,9 +159,9 @@ effectComposer.addPass(renderPass)
 
 // film pass
 const filmPass = new FilmPass(
-    1,
-    0.025,
-    648,
+    0.9,
+    0.1,
+    224,
     false
 )
 filmPass.renderToScreen = true
@@ -179,7 +179,7 @@ const clock = new THREE.Clock()
 
 let previousTime = 0
 const configParam = {
-    animationSpeed: .7
+    animationSpeed: .8
 }
 
 const update = (time) => 
@@ -230,3 +230,9 @@ gui
 gui
 .add(bloomPass, `strength`).name(`Bloom Strength`)
 .min(0).max(1).step(0.001)
+
+const folder = gui.addFolder('FilmPass');
+folder.add(filmPass.uniforms.grayscale, 'value').name('grayscale');
+folder.add(filmPass.uniforms.nIntensity, 'value', 0, 1).name('noise intensity');
+folder.add(filmPass.uniforms.sIntensity, 'value', 0, 1).name('scanline intensity');
+folder.add(filmPass.uniforms.sCount, 'value', 0, 1000).name('scanline count');
