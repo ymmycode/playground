@@ -37,6 +37,15 @@ const textureLoader = new THREE.TextureLoader()
 // cube texture
 const cubeTextureLoader = new THREE.CubeTextureLoader()
 
+// * IMPORT MODEL
+gltfLoader.load(
+    `Floating-Playground/playground.glb`,
+    (gltf) => 
+    {
+        scene.add(gltf.scene)
+    }
+)
+
 // * ASPECT RATIO / RESOLUTION
 const resolution = 
 {
@@ -51,6 +60,7 @@ const camera = new THREE.PerspectiveCamera(
     0.01,
     2000
 )
+camera.position.set(30, 30, 30)
 scene.add(camera)
 
 // * RENDERER 
@@ -64,6 +74,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 // * CONTROLS
 const control = new OrbitControls(camera, canvas)
+control.target.set(0, 0, 0)
 control.enableDamping = true
 
 // * RESIZE UPDATE
@@ -93,6 +104,9 @@ const configParam = {
 
 const update = (time) => 
 {
+    // Control Update
+    control.update()
+
     // elapsed time
     const elapsedTime = clock.getElapsedTime()
 
