@@ -1,14 +1,19 @@
 import './style.css'
 import * as THREE from 'three'
-import * as datGUI from 'dat.gui'
-import { Stats } from 'three/examples/jsm/libs/stats.module.js'
+import * as dat from 'dat.gui'
+import Stats from 'three/examples/jsm/libs/stats.module.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/dracoloader'
 
 
 // * DEBUG GUI
-const gui = new datGUI()
+const gui = new dat.GUI()
+
+// * Stats
+const statsPanel = new Stats()
+statsPanel.showPanel(2)
+document.body.appendChild(statsPanel.dom)
 
 // * DOM
 const canvas = document.querySelector(`.webgl`)
@@ -31,10 +36,6 @@ const textureLoader = new THREE.TextureLoader()
 
 // cube texture
 const cubeTextureLoader = new THREE.CubeTextureLoader()
-
-// * CONTROLS
-const control = new OrbitControls()
-control.enableDamping = true
 
 // * ASPECT RATIO / RESOLUTION
 const resolution = 
@@ -61,6 +62,10 @@ renderer.outputEncoding = THREE.sRGBEncoding
 renderer.setSize(resolution.width, resolution.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
+// * CONTROLS
+const control = new OrbitControls(camera, canvas)
+control.enableDamping = true
+
 // * RESIZE UPDATE
 window.addEventListener(`resize`, () => 
 {
@@ -76,6 +81,7 @@ window.addEventListener(`resize`, () =>
     renderer.setSize(resolution.width, resolution.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
+
 
 // * ANIMATE
 const clock = new THREE.Clock()
@@ -98,6 +104,9 @@ const update = (time) =>
     renderer.render(scene, camera)
     renderer.setSize(resolution.width, resolution.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+    // Stats Panel
+    statsPanel.update()
 
     // update frame
     requestAnimationFrame(update)
