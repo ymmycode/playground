@@ -5,6 +5,14 @@ import Stats from 'three/examples/jsm/libs/stats.module.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/dracoloader'
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
+import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass.js'
+
+// * LOADING MANAGER
+const manager = new THREE.LoadingManager() 
 
 // * DEBUG GUI
 const gui = new dat.GUI()
@@ -138,6 +146,28 @@ window.addEventListener(`resize`, () =>
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
 
+// * POST-PROCESSING
+const effectComposer = new EffectComposer(renderer)
+effectComposer.setSize(resolution.width, resolution.height)
+effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+const renderPass = new RenderPass(scene, camera)
+effectComposer.addPass(renderPass)
+
+const filmPass = new FilmPass(
+    0.5,
+    0.025,
+    648,
+    false
+)
+effectComposer.addPass(filmPass)
+
+const bloomPass = new UnrealBloomPass()
+bloomPass.threshold = 0.22
+bloomPass.radius = 8.23
+bloomPass.strength = 0.048
+effectComposer.addPass(bloomPass)
+
 // * ANIMATE
 const clock = new THREE.Clock()
 
@@ -161,10 +191,13 @@ const update = (time) =>
     // Mixer Update
     mixer && mixer.update(deltaTime)
 
-    // Update Render
-    renderer.render(scene, camera)
+    // Update Renderer and Effect Composer
+    // renderer.render(scene, camera)
+    effectComposer.render(deltaTime)
     renderer.setSize(resolution.width, resolution.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    effectComposer.setSize(resolution.width, resolution.width)
+    effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
     // Stats Panel
     statsPanel.update()
