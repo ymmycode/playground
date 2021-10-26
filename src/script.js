@@ -6,7 +6,6 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/dracoloader'
 
-
 // * DEBUG GUI
 const gui = new dat.GUI()
 
@@ -52,11 +51,26 @@ const environment = cubeTextureLoader.load([
 ])
 scene.environment = environment
 
-// * IMPORT MODEL
+// * IMPORT MODEL with ANIMATION
+let mixer = null
+
 gltfLoader.load(
     `Floating-Playground/playground.glb`,
     (gltf) => 
     {
+        mixer = new THREE.AnimationMixer(gltf.scene)
+        const clips = gltf.animations || []
+
+        for (let i = 0; i < 503; i++)
+        {
+            setTimeout(
+                () => 
+                {
+                    mixer.clipAction(clips[i]).play()
+                }, 10 * i
+            )
+        }
+
         scene.add(gltf.scene)
     }
 )
@@ -129,7 +143,7 @@ const clock = new THREE.Clock()
 
 let previousTime = 0
 const configParam = {
-    animationSpeed: 1
+    animationSpeed: .7
 }
 
 const update = (time) => 
@@ -143,6 +157,9 @@ const update = (time) =>
     // Delta Time
     const deltaTime = (time - previousTime) / 1000 * configParam.animationSpeed
     previousTime = time
+
+    // Mixer Update
+    mixer && mixer.update(deltaTime)
 
     // Update Render
     renderer.render(scene, camera)
@@ -159,6 +176,9 @@ update()
 
 
 // * DEBUG
+gui
+.add(configParam, `animationSpeed`).name(`Animation Speed`)
+.min(0.1).max(3).step(0.001)
 
 gui
 .add(ambientLight, `intensity`).name(`Ambient Light Intensity`)
