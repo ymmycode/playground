@@ -37,6 +37,21 @@ const textureLoader = new THREE.TextureLoader()
 // cube texture
 const cubeTextureLoader = new THREE.CubeTextureLoader()
 
+// * BACKGROUND
+const background = textureLoader.load(`bg/bggrad.png`)
+scene.background = background
+
+// * ENVIRONMENT
+const environment = cubeTextureLoader.load([
+    `env/px.png`,
+    `env/nx.png`,
+    `env/py.png`,
+    `env/ny.png`,
+    `env/pz.png`,
+    `env/nz.png`
+])
+scene.environment = environment
+
 // * IMPORT MODEL
 gltfLoader.load(
     `Floating-Playground/playground.glb`,
@@ -45,6 +60,20 @@ gltfLoader.load(
         scene.add(gltf.scene)
     }
 )
+
+// * LIGHTING
+// Ambient
+const ambientLight = new THREE.AmbientLight()
+ambientLight.intensity = 0.5
+ambientLight.color = new THREE.Color(`#FFDCED`)
+scene.add(ambientLight)
+
+// Directional
+const sunLight = new THREE.DirectionalLight()
+sunLight.intensity = .6
+sunLight.position.set(-60, 100, 100)
+sunLight.color = new THREE.Color(`#FFF8B4`)
+scene.add(sunLight)
 
 // * ASPECT RATIO / RESOLUTION
 const resolution = 
@@ -60,7 +89,7 @@ const camera = new THREE.PerspectiveCamera(
     0.01,
     2000
 )
-camera.position.set(30, 30, 30)
+camera.position.set(-15, 8, 21)
 scene.add(camera)
 
 // * RENDERER 
@@ -69,6 +98,8 @@ const renderer = new THREE.WebGLRenderer({
     antialias: true
 })
 renderer.outputEncoding = THREE.sRGBEncoding
+renderer.toneMapping = THREE.LinearToneMapping
+renderer.toneMappingExposure = 1.05
 renderer.setSize(resolution.width, resolution.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
@@ -92,7 +123,6 @@ window.addEventListener(`resize`, () =>
     renderer.setSize(resolution.width, resolution.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
-
 
 // * ANIMATE
 const clock = new THREE.Clock()
@@ -126,3 +156,14 @@ const update = (time) =>
     requestAnimationFrame(update)
 }
 update()
+
+
+// * DEBUG
+
+gui
+.add(ambientLight, `intensity`).name(`Ambient Light Intensity`)
+.min(0.1).max(3).step(0.001)
+
+gui
+.add(sunLight, `intensity`).name(`Sun Light Intensity`)
+.min(0.1).max(3).step(0.001)
