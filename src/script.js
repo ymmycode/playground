@@ -35,14 +35,14 @@ const dracoLoader = new DRACOLoader()
 dracoLoader.setDecoderPath(dracoPath)
 
 // gltf
-const gltfLoader = new GLTFLoader()
+const gltfLoader = new GLTFLoader(manager)
 gltfLoader.setDRACOLoader(dracoLoader)
 
 // texture
-const textureLoader = new THREE.TextureLoader()
+const textureLoader = new THREE.TextureLoader(manager)
 
 // cube texture
-const cubeTextureLoader = new THREE.CubeTextureLoader()
+const cubeTextureLoader = new THREE.CubeTextureLoader(manager)
 
 // * BACKGROUND
 const background = textureLoader.load(`bg/bggrad.png`)
@@ -59,8 +59,24 @@ const environment = cubeTextureLoader.load([
 ])
 scene.environment = environment
 
+// ! Test material
+// const materialTest = new THREE.MeshStandardMaterial({
+//     color: new THREE.Color(`#ffffff`)
+// })
+// console.log(materialTest)
+
 // * IMPORT MODEL with ANIMATION
-let mixer = null
+let mixer, 
+    sakuraMaterial, 
+    grassMaterial, 
+    bushMaterial,
+    greenMaterial,
+    yellowMaterial,
+    lightGreenMaterial,
+    mapleMaterial = null
+const uniforms = {
+    uTime: { value: 0 }
+}
 
 gltfLoader.load(
     `Floating-Playground/playground.glb`,
@@ -79,9 +95,82 @@ gltfLoader.load(
             )
         }
 
+        grassMaterial = gltf.scene.children[3].children.find(child => child.name === `GrassStylized001`)
+        grassMaterial.material.onBeforeCompile = (shader) => 
+        {
+            vertexDisplacement(shader, 0.075, 0.05, `position.x`, `xz`)
+        }
+
+        bushMaterial = gltf.scene.children[3].children.find(child => child.name === `Bush003`)
+        bushMaterial.material.onBeforeCompile = (shader) => 
+        {
+            vertexDisplacement(shader, 0.075, 0.5, `position.z`, `xz`)
+        }
+
+        sakuraMaterial = gltf.scene.children[3].children.find(child => child.name === `Sakura1001`)
+        sakuraMaterial.material.onBeforeCompile = (shader) => 
+        {
+            vertexDisplacement(shader, 0.05, 0.9, `position.z`, `xy`)
+        }
+
+        greenMaterial = gltf.scene.children[3].children.find(child => child.name === `Green1001`)
+        greenMaterial.material.onBeforeCompile = (shader) => 
+        {
+            vertexDisplacement(shader, 0.055, 0.9, `position.z`, `yz`)
+        }
+
+        yellowMaterial = gltf.scene.children[3].children.find(child => child.name === `Yellow1001`)
+        yellowMaterial.material.onBeforeCompile = (shader) => 
+        {
+            vertexDisplacement(shader, 0.05, 0.9, `position.z`, `xy`)
+        }
+
+        lightGreenMaterial = gltf.scene.children[3].children.find(child => child.name === `LightGreen1001`)
+        lightGreenMaterial.material.onBeforeCompile = (shader) => 
+        {
+            vertexDisplacement(shader, 0.05, 0.6, `position.z`, `yz`)
+        }
+
+        mapleMaterial = gltf.scene.children[3].children.find(child => child.name === `Maple1001`)
+        mapleMaterial.material.onBeforeCompile = (shader) => 
+        {
+            vertexDisplacement(shader, 0.075, 0.9, `position.z`, `xy`)
+        }
+
+        //gltf.scene.children[3].children.material.wireframe = true
+
         scene.add(gltf.scene)
     }
 )
+
+function vertexDisplacement(shader, intensityMultiplier, angleMultiplier, pos, transformed)
+{
+    shader.uniforms.uTime = uniforms.uTime
+
+        shader.vertexShader = shader.vertexShader.replace(
+            `#include <common>`,
+                `
+                    #include <common>
+                    uniform float uTime;
+                    
+                    mat2 rotate(float angle)
+                    {
+                        return mat2(cos(angle), -sin(angle), sin(angle), cos(angle));    
+                    }
+                `
+            )
+
+        shader.vertexShader = shader.vertexShader.replace(
+                `#include <begin_vertex>`,
+                `
+                    #include <begin_vertex>
+                    float angle = (sin(${pos} + uTime)) * ${intensityMultiplier};
+                    mat2 rotateMatrix = rotate(sin(angle * ${angleMultiplier}));
+                    transformed.${transformed} = rotateMatrix * transformed.${transformed};
+                    
+                `
+            )
+}
 
 // * LIGHTING
 // Ambient
@@ -190,9 +279,13 @@ const update = (time) =>
     // elapsed time
     const elapsedTime = clock.getElapsedTime()
 
+
     // Delta Time
     const deltaTime = (time - previousTime) / 1000 * configParam.animationSpeed
     previousTime = time
+
+    // update uniform
+    uniforms.uTime.value = elapsedTime
 
     // Mixer Update
     mixer && mixer.update(deltaTime)
