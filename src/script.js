@@ -61,9 +61,10 @@ scene.environment = environment
 
 // * IMPORT MODEL with ANIMATION
 let mixer, 
-    sakuraMaterial, 
     grassMaterial, 
     bushMaterial,
+    treeLeavesGroup,
+    sakuraMaterial, 
     greenMaterial,
     yellowMaterial,
     lightGreenMaterial,
@@ -80,64 +81,65 @@ gltfLoader.load(
         mixer = new THREE.AnimationMixer(gltf.scene)
         const clips = gltf.animations || []
 
-        for (let i = 0; i < 133; i++)
+        for (let i = 0; i < 132; i++)
         {
+            const delay = i > 1 ? 20 * i : 10
             setTimeout(
                 () => 
                 {
                     mixer.clipAction(clips[i]).play()
-                }, 15 * i
+                }, delay
             )
         }
+        
+        treeLeavesGroup = gltf.scene.children[1].children.find(child => child.name === `TreeLeaves`) 
 
-        console.log(gltf.scene.children[3])
-
-        grassMaterial = gltf.scene.children[3].children.find(child => child.name === `GrassStylized1001`)
+        grassMaterial = gltf.scene.children[1].children.find(child => child.name === `GrassStylized1001`)
         grassMaterial.material.onBeforeCompile = (shader) => 
         {
-            vertexDisplacement(shader, 0.075, 0.05, `position.x`, `xz`)
+            vertexDisplacement(shader, 0.06, 0.05, `position.x`, `xz`)
         }
 
-        bushMaterial = gltf.scene.children[3].children.find(child => child.name === `Bush1001`)
+        bushMaterial = gltf.scene.children[1].children.find(child => child.name === `Bushes`)
         bushMaterial.material.onBeforeCompile = (shader) => 
         {
-            vertexDisplacement(shader, 0.075, 0.5, `position.z`, `xz`)
+            vertexDisplacement(shader, 0.035, 0.1, `position.z`, `xz`)
         }
 
-        sakuraMaterial = gltf.scene.children[3].children.find(child => child.name === `SakuraLeaves`)
+        sakuraMaterial = treeLeavesGroup.children.find(child => child.name === `TreeLeaves_2`)
         sakuraMaterial.material.onBeforeCompile = (shader) => 
         {
-            vertexDisplacement(shader, 0.05, 0.9, `position.z`, `xy`)
+            vertexDisplacement(shader, 0.03, 0.1, `position.z`, `xz`)
         }
 
-        greenMaterial = gltf.scene.children[3].children.find(child => child.name === `GreenLeaves`)
+        greenMaterial = treeLeavesGroup.children.find(child => child.name === `TreeLeaves_1`)
         greenMaterial.material.onBeforeCompile = (shader) => 
         {
-            vertexDisplacement(shader, 0.055, 0.9, `position.z`, `yz`)
+            vertexDisplacement(shader, 0.03, 0.2, `position.z`, `xz`)
         }
 
-        yellowMaterial = gltf.scene.children[3].children.find(child => child.name === `YellowMapleLeaves`)
+        yellowMaterial = treeLeavesGroup.children.find(child => child.name === `TreeLeaves_4`)
         yellowMaterial.material.onBeforeCompile = (shader) => 
         {
-            vertexDisplacement(shader, 0.05, 0.9, `position.z`, `xy`)
+            vertexDisplacement(shader, 0.045, 0.125, `position.y`, `xy`)
         }
 
-        lightGreenMaterial = gltf.scene.children[3].children.find(child => child.name === `LightGreenLeave`)
+        lightGreenMaterial = treeLeavesGroup.children.find(child => child.name === `TreeLeaves_5`)
         lightGreenMaterial.material.onBeforeCompile = (shader) => 
         {
-            vertexDisplacement(shader, 0.05, 0.6, `position.z`, `yz`)
+            vertexDisplacement(shader, 0.065, 0.2, `position.z`, `yz`)
         }
 
-        lightGreenMaterial2 = gltf.scene.children[3].children.find(child => child.name === `LightGreen2Leaves`)
+        lightGreenMaterial2 = treeLeavesGroup.children.find(child => child.name === `TreeLeaves_6`)
         lightGreenMaterial2.material.onBeforeCompile = (shader) => 
         {
-            vertexDisplacement(shader, 0.05, 0.6, `position.z`, `yz`)
+            vertexDisplacement(shader, 0.04, 0.125, `position.z`, `yz`)
         }
 
-        mapleMaterial = gltf.scene.children[3].children.find(child => child.name === `JapaneseMapleLeaves`)
+        mapleMaterial = treeLeavesGroup.children.find(child => child.name === `TreeLeaves_3`)
         mapleMaterial.material.onBeforeCompile = (shader) => 
         {
-            vertexDisplacement(shader, 0.075, 0.9, `position.z`, `xy`)
+            vertexDisplacement(shader, 0.025, 0.125, `position.y`, `xy`)
         }
 
         //gltf.scene.children[3].children.material.wireframe = true
@@ -148,6 +150,7 @@ gltfLoader.load(
 
 function vertexDisplacement(shader, intensityMultiplier, angleMultiplier, pos, transformed)
 {
+    // shader.precision = `lowp`
     shader.uniforms.uTime = uniforms.uTime
 
         shader.vertexShader = shader.vertexShader.replace(
@@ -209,8 +212,9 @@ scene.add(camera)
 // * RENDERER 
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
-    antialias: true
+    // precision: `mediump`
 })
+renderer.compile(scene, camera)
 renderer.outputEncoding = THREE.sRGBEncoding
 renderer.toneMapping = THREE.LinearToneMapping
 renderer.toneMappingExposure = 1.05
@@ -271,8 +275,10 @@ const clock = new THREE.Clock()
 
 let previousTime = 0
 const configParam = {
-    animationSpeed: .6
+    animationSpeed: .6,
+    interval: 1000/35
 }
+let deltaTime = 0
 
 const update = (time) => 
 {
@@ -282,13 +288,21 @@ const update = (time) =>
     // elapsed time
     const elapsedTime = clock.getElapsedTime()
 
-
     // Delta Time
-    const deltaTime = (time - previousTime) / 1000 * configParam.animationSpeed
+    deltaTime = (time - previousTime) / 1000 * configParam.animationSpeed
     previousTime = time
+    // console.log(deltaTime)
+
+    // deltaTime += clock.getDelta()
+    // console.log(delta)
 
     // update uniform
     uniforms.uTime.value = elapsedTime
+
+    // if(deltaTime > configParam.interval)
+    // {
+
+    // }
 
     // Mixer Update
     mixer && mixer.update(deltaTime)
@@ -306,6 +320,7 @@ const update = (time) =>
 
     // update frame
     requestAnimationFrame(update)
+
 }
 update()
 
