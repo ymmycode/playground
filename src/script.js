@@ -44,6 +44,9 @@ const textureLoader = new THREE.TextureLoader(manager)
 // cube texture
 const cubeTextureLoader = new THREE.CubeTextureLoader(manager)
 
+// audio loader
+const audioLoader = new THREE.AudioLoader(manager)
+
 // * BACKGROUND
 const background = textureLoader.load(`bg/bggrad.png`)
 scene.background = background
@@ -58,6 +61,60 @@ const environment = cubeTextureLoader.load([
     `env/nz.png`
 ])
 scene.environment = environment
+
+// * SOUNDS
+const audioListener = new THREE.AudioListener()
+const globalSound = new THREE.Audio(audioListener)
+const globalPositionalSound = new THREE.PositionalAudio(audioListener)
+
+const environmentSound = audioLoader.load(
+    `sounds/environment.mp3`,
+    (buffer) => 
+    {
+        globalSound.setBuffer(buffer)
+        globalSound.setLoop(true)
+        globalSound.setVolume(1.0)
+        globalSound.play()
+    }
+)
+
+const swingSqueak = audioLoader.load(
+    `sounds/swingsqueak.mp3`,
+    (buffer) => 
+    {
+        window.setTimeout(
+            () => {
+                globalPositionalSound.setBuffer(buffer)
+                globalPositionalSound.setLoop(true)
+                globalPositionalSound.setVolume(1.8)
+                globalPositionalSound.setRefDistance(8)
+                globalPositionalSound.play()
+            },10
+        )
+    }
+)
+
+const swingSqueakPosition = new THREE.Mesh(
+    new THREE.BoxBufferGeometry(3, 3, 1),
+    new THREE.MeshBasicMaterial({color: `#fff`, visible: false})
+)
+swingSqueakPosition.position.set(-7.2, 1, -4.2)
+scene.add(swingSqueakPosition)
+swingSqueakPosition.add(globalPositionalSound)
+
+// const positionalHelper = new PositionalAudioHelper(globalPositionalSound)
+// globalPositionalSound.add(positionalHelper)
+
+audioListener.context.resume()
+window.addEventListener(`keydown`, (evt) => 
+{
+    if(evt.code === `Space`)
+    {
+        // audioContext.resume()
+        audioListener.context.resume()
+    }
+})
+
 
 // * IMPORT MODEL with ANIMATION
 let mixer, 
@@ -208,6 +265,7 @@ const camera = new THREE.PerspectiveCamera(
 )
 camera.position.set(-15, 8, 21)
 scene.add(camera)
+camera.add(audioListener)
 
 // * RENDERER 
 const renderer = new THREE.WebGLRenderer({
@@ -260,14 +318,13 @@ const filmPass = new FilmPass(
     224,
     false
 )
-filmPass.renderToScreen = true
 effectComposer.addPass(filmPass)
 
 // bloom pass
 const bloomPass = new UnrealBloomPass()
 bloomPass.threshold = 0.22
 bloomPass.radius = 8.23
-bloomPass.strength = 0.1
+bloomPass.strength = 0.11
 effectComposer.addPass(bloomPass)
 
 // * ANIMATE
@@ -326,6 +383,15 @@ update()
 
 
 // * DEBUG
+
+gui
+.add(swingSqueakPosition.position, `x`)
+.min(-10).max(10).step(0.001)
+
+gui
+.add(swingSqueakPosition.position, `z`)
+.min(-10).max(10).step(0.001)
+
 gui
 .add(configParam, `animationSpeed`).name(`Animation Speed`)
 .min(0.1).max(3).step(0.001)
