@@ -65,6 +65,7 @@ scene.environment = environment
 // * SOUNDS
 const audioListener = new THREE.AudioListener()
 const globalSound = new THREE.Audio(audioListener)
+const sceneMusic = new THREE.Audio(audioListener)
 const globalPositionalSound = new THREE.PositionalAudio(audioListener)
 
 const environmentSound = audioLoader.load(
@@ -73,8 +74,19 @@ const environmentSound = audioLoader.load(
     {
         globalSound.setBuffer(buffer)
         globalSound.setLoop(true)
-        globalSound.setVolume(1.0)
+        globalSound.setVolume(2.0)
         globalSound.play()
+    }
+)
+
+const music = audioLoader.load(
+    `sounds/ill be waiting on the park, see you at noon.mp3`,
+    (buffer) => 
+    {
+        sceneMusic.setBuffer(buffer)
+        sceneMusic.setLoop(true)
+        sceneMusic.setVolume(0.4)
+        sceneMusic.play()
     }
 )
 
@@ -87,7 +99,7 @@ const swingSqueak = audioLoader.load(
                 globalPositionalSound.setBuffer(buffer)
                 globalPositionalSound.setLoop(true)
                 globalPositionalSound.setVolume(1.8)
-                globalPositionalSound.setRefDistance(8)
+                globalPositionalSound.setRefDistance(10)
                 globalPositionalSound.play()
             },10
         )
