@@ -14,7 +14,6 @@ import cameraTransitionVert from  './shaders/cameraTransition.vert'
 import cameraTransitionFrag from  './shaders/cameraTransition.frag'
 import loadMenuVert from './shaders/loadMenu.vert'
 import loadMenuFrag from './shaders/loadMenu.frag'
-import { wrap } from 'gsap/all'
 
 // * LOADING MANAGER
 const manager = new THREE.LoadingManager() 
@@ -91,7 +90,8 @@ const music = audioLoader.load(
         sceneMusic.setBuffer(buffer)
         // sceneMusic.setLoop(true)
         sceneMusic.setVolume(0.4)
-        // sceneMusic.play()
+        sceneMusic.play()
+        sceneMusic.stop()
     }
 )
 
@@ -268,7 +268,7 @@ const resolution =
 
 // * CAMERA
 const camera = new THREE.PerspectiveCamera(
-    50,
+    45,
     resolution.width / resolution.height,
     0.01,
     200
@@ -277,6 +277,12 @@ camera.position.set(-50, 17, 82)
 camera.lookAt(0,0,0)
 scene.add(camera)
 camera.add(audioListener)
+
+// * CAMERA FRUSTUM
+const frustum = new THREE.Frustum()
+camera.updateMatrix()
+camera.updateProjectionMatrix()
+camera.matrixWorldInverse.invert(camera.matrixWorld)
 
 // * CINEMATIC CAMERA
 // lookAt Point
@@ -304,38 +310,46 @@ const planeTransitionShader = new THREE.ShaderMaterial({
 const planeLoading = new THREE.Mesh(planeLoad, planeLoadingShader)
 const planeTransition = new THREE.Mesh(planeTrans, planeTransitionShader)
 // planeTransition.frustumCulled = false
-// camera.add(planeLoading)
 camera.add(planeTransition, planeLoading)
 
 const transitionValue = 1500
 const pointTime = 13900
+let cinematicAnimations = []
+let cinTween = []
+
+cinTween[1] = gsap.fromTo(uniforms.transitionValue, {value: 0}, {value: 1.5, duration: 1.5})
+cinTween[2] = gsap.fromTo(uniforms.transitionValue, {value: 1.5}, {value: 0, duration: 1.5})
 
 const cinematic = () => 
 {
     // set camera pos
+    cinematicAnimations[0] = 
     window.setTimeout(
         () => 
         {
-            gsap.fromTo(camera.position, {x: -50, y: 17, z: 82}, {x: -15, y: 8, z: 21, duration: 10})
+            cinTween[0] = gsap.fromTo(camera.position, {x: -50, y: 17, z: 82}, {x: -15, y: 8, z: 21, duration: 10})
+            cinTween[0].play(0)
         },
         transitionValue
     )
 
     //transition
+    cinematicAnimations[1] = 
     window.setTimeout(
         () => 
         {
-            gsap.fromTo(uniforms.transitionValue, {value: 0}, {value: 1.5, duration: 1.5})
-            window.setTimeout(()=>
+            cinTween[1].play(0)
+            cinematicAnimations[17] = window.setTimeout(()=>
             {
-                gsap.fromTo(uniforms.transitionValue, {value: 1.5}, {value: 0, duration: 1.5})
+                cinTween[2].play(0)
             }, 2000)
         },
         pointTime - transitionValue - 1000
     )
 
     // set camera pos
-    window.setTimeout(
+    cinematicAnimations[2] = 
+        window.setTimeout(
         () => 
         {
             camera.position.set(-9.75, 2.75, 12.48)
@@ -345,19 +359,21 @@ const cinematic = () =>
     )
 
     //transition
+    cinematicAnimations[3] = 
     window.setTimeout(
         () => 
         {
-            gsap.fromTo(uniforms.transitionValue, {value: 0}, {value: 1.5, duration: 1.5})
-            window.setTimeout(()=>
+            cinTween[1].play(0)
+            cinematicAnimations[18] = window.setTimeout(()=>
             {
-                gsap.fromTo(uniforms.transitionValue, {value: 1.5}, {value: 0, duration: 1.5})
+                cinTween[2].play(0)
             }, 2000)
         },
         pointTime * 2 - transitionValue - 3500
     )
 
     // set camera pos
+    cinematicAnimations[4] = 
     window.setTimeout(
         () => 
         {
@@ -368,19 +384,21 @@ const cinematic = () =>
     )
 
     //transition
+    cinematicAnimations[5] = 
     window.setTimeout(
         () => 
         {
-            gsap.fromTo(uniforms.transitionValue, {value: 0}, {value: 1.5, duration: 1.5})
-            window.setTimeout(()=>
+            cinTween[1].play(0)
+            cinematicAnimations[19] = window.setTimeout(()=>
             {
-                gsap.fromTo(uniforms.transitionValue, {value: 1.5}, {value: 0, duration: 1.5})
+                cinTween[2].play(0)
             }, 2000)
         },
         pointTime * 3 - transitionValue - 4500
     )
 
     // set camera pos
+    cinematicAnimations[6] = 
     window.setTimeout(
         () => 
         {
@@ -391,19 +409,21 @@ const cinematic = () =>
     )
 
     //transition
+    cinematicAnimations[7] = 
     window.setTimeout(
         () => 
         {
-            gsap.fromTo(uniforms.transitionValue, {value: 0}, {value: 1.5, duration: 1.5})
-            window.setTimeout(()=>
+            cinTween[1].play(0)
+            cinematicAnimations[20] = window.setTimeout(()=>
             {
-                gsap.fromTo(uniforms.transitionValue, {value: 1.5}, {value: 0, duration: 1.5})
+                cinTween[2].play(0)
             }, 2000)
         },
         pointTime * 4 - transitionValue - 4500
     )
 
     // set camera pos
+    cinematicAnimations[8] = 
     window.setTimeout(
         () => 
         {
@@ -414,19 +434,21 @@ const cinematic = () =>
     )
 
     //transition
+    cinematicAnimations[9] = 
     window.setTimeout(
         () => 
         {
-            gsap.fromTo(uniforms.transitionValue, {value: 0}, {value: 1.5, duration: 1.5})
-            window.setTimeout(()=>
+            cinTween[1].play(0)
+            cinematicAnimations[21] = window.setTimeout(()=>
             {
-                gsap.fromTo(uniforms.transitionValue, {value: 1.5}, {value: 0, duration: 1.5})
+                cinTween[2].play(0)
             }, 2000)
         },
         pointTime * 5 - transitionValue - 4500
     )
 
     //  set camera pos
+    cinematicAnimations[10] = 
     window.setTimeout(
         () => 
         {
@@ -437,19 +459,21 @@ const cinematic = () =>
     )
 
     //transition
+    cinematicAnimations[11] = 
     window.setTimeout(
         () => 
         {
-            gsap.fromTo(uniforms.transitionValue, {value: 0}, {value: 1.5, duration: 1.5})
-            window.setTimeout(()=>
+            cinTween[1].play(0)
+            cinematicAnimations[22] = window.setTimeout(()=>
             {
-                gsap.fromTo(uniforms.transitionValue, {value: 1.5}, {value: 0, duration: 1.5})
+                cinTween[2].play(0)
             }, 2000)
         },
         pointTime * 6 - transitionValue - 4500
     )
 
     // set camera pos
+    cinematicAnimations[12] = 
     window.setTimeout(
         () => 
         {
@@ -460,19 +484,21 @@ const cinematic = () =>
     )
 
     //transition
+    cinematicAnimations[13] = 
     window.setTimeout(
         () => 
         {
-            gsap.fromTo(uniforms.transitionValue, {value: 0}, {value: 1.5, duration: 1.5})
-            window.setTimeout(()=>
+            cinTween[1].play(0)
+            cinematicAnimations[23] = window.setTimeout(()=>
             {
-                gsap.fromTo(uniforms.transitionValue, {value: 1.5}, {value: 0, duration: 1.5})
+                cinTween[2].play(0)
             }, 2000)
         },
         pointTime * 7 - transitionValue - 4500
     )
 
     // set camera pos
+    cinematicAnimations[14] = 
     window.setTimeout(
         () => 
         {
@@ -483,19 +509,21 @@ const cinematic = () =>
     )
 
     //transition
+    cinematicAnimations[15] = 
     window.setTimeout(
         () => 
         {
-            gsap.fromTo(uniforms.transitionValue, {value: 0}, {value: 1.5, duration: 1.5})
-            window.setTimeout(()=>
+            cinTween[1].play(0)
+            cinematicAnimations[24] = window.setTimeout(()=>
             {
-                gsap.fromTo(uniforms.transitionValue, {value: 1.5}, {value: 0, duration: 1.5})
+                cinTween[2].play(0)
             }, 2000)
         },
         pointTime * 8 - transitionValue - 4500
     )
 
     // set camera pos
+    cinematicAnimations[16] = 
     window.setTimeout(
         () => 
         {
@@ -506,25 +534,28 @@ const cinematic = () =>
     )
 
     //transition
+    cinematicAnimations[27] = 
     window.setTimeout(
         () => 
         {
-            gsap.fromTo(uniforms.transitionValue, {value: 0}, {value: 1.5, duration: 1.5})
-            window.setTimeout(()=>
+            cinTween[1].play(0)
+            cinematicAnimations[25] = window.setTimeout(()=>
             {
-                gsap.fromTo(uniforms.transitionValue, {value: 1.5}, {value: 0, duration: 1.5})
+                cinTween[2].play(0)
             }, 2000)
         },
         pointTime * 9 - transitionValue - 3000
     )
 
     // set camera pos
+    cinematicAnimations[28] = 
     window.setTimeout(
         () => 
         {
             point.position.set(0, 0, 0)
-            gsap.fromTo(camera.position, {x: -15, y: 8, z: 21}, {x: -50, y: 17, z: 82, duration: 16})
-            setTimeout(()=>
+            cinTween[3] = gsap.fromTo(camera.position, {x: -15, y: 8, z: 21}, {x: -50, y: 17, z: 82, duration: 16})
+            cinTween[3].play(0)
+            cinematicAnimations[26] = setTimeout(()=>
             {
                 menuScreen()
             }, 11000)
@@ -533,10 +564,74 @@ const cinematic = () =>
     )
 }
 
+const clearingTimeout = ()=>
+{
+    cinematicAnimations.forEach((animation)=>
+    {
+        clearTimeout(animation)
+    })
+}
+
+const pausingTween = () => 
+{
+    cinTween.forEach((tween) => 
+    {
+        tween.pause()
+    })
+}
+
+// * POINTS OF INTEREST !poi
+const points = [
+    {
+        position: new THREE.Vector3(1.46, 0.582, -9.494),
+        element: document.querySelector(`.point-0`)
+    },
+
+    {
+        position: new THREE.Vector3(7, 4.67, -4.88),
+        element: document.querySelector(`.point-1`)
+    },
+
+    {
+        position: new THREE.Vector3(-0.256, 4.378, 0),
+        element: document.querySelector(`.point-2`)
+    },
+
+    {
+        position: new THREE.Vector3(-8.86, 2, 4.35),
+        element: document.querySelector(`.point-3`)
+    },
+
+    {
+        position: new THREE.Vector3(-3.39, 1.929, -14.442),
+        element: document.querySelector(`.point-4`)
+    },
+
+    {
+        position: new THREE.Vector3(-6.885, 2.256, -5.513),
+        element: document.querySelector(`.point-5`)
+    },
+]
+
+const hideAllPOI = ()=>
+{
+    points.forEach((point)=>
+    {
+        point.element.classList.remove(`visible`)
+    })
+}
+
+const showAllPOI = ()=>
+{
+    points.forEach((point)=>
+    {
+        point.element.classList.add(`visible`)
+    })
+}
+
 // * RENDERER 
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
-    // precision: `mediump`
 })
 renderer.compile(scene, camera)
 renderer.outputEncoding = THREE.sRGBEncoding
@@ -589,7 +684,7 @@ bloomPass.radius = 8.23
 bloomPass.strength = 0.11
 effectComposer.addPass(bloomPass)
 
-// * ORBITCONTROLS
+// * CONTROLS
 const control = new OrbitControls(camera, canvas)
 control.target.set(0, 0, 0)
 control.enableDamping = true
@@ -604,18 +699,51 @@ const configParam = {
     interval: 1000/35
 }
 let deltaTime = 0
-let explore = false
+let explore = false 
+let swing = false
+let fov = 45
 
 const update = (time) => 
 {
+    // elapsed time
+    const elapsedTime = clock.getElapsedTime()
+
+    if(explore === true)
+    {
+        points.forEach((point) => 
+        {
+            const screenPosition = point.position.clone()
+            screenPosition.project(camera)
+
+            frustum.setFromProjectionMatrix(new THREE.Matrix4().multiplyMatrices(
+                camera.projectionMatrix,
+                camera.matrixWorldInverse
+            ))
+
+            if(frustum.containsPoint(point.position))
+            {
+                hidePOI === false && point.element.classList.add(`visible`)
+                hidePOI === true && point.element.classList.remove(`visible`)
+            }
+            else{point.element.classList.remove(`visible`)}
+
+            const translateX = screenPosition.x * resolution.width * 0.5
+            const translateY = - screenPosition.y * resolution.height * 0.5
+            point.element.style.transform = `translateX(${translateX}px) translateY(${translateY}px)`
+        })
+    }
+
+    if(swing === true) 
+    {
+        camera.fov = fov - Math.cos(fov + 10 - elapsedTime) 
+        camera.updateProjectionMatrix()
+    }
+
     gui.updateDisplay()
 
     // Control Update
     control.update()
     if(explore === false) camera.lookAt(point.position)
-
-    // elapsed time
-    const elapsedTime = clock.getElapsedTime()
 
     // Delta Time
     deltaTime = (time - previousTime) / 1000 * configParam.animationSpeed
@@ -657,20 +785,59 @@ update()
 
 // * CONFIG
 const wrapper = document.querySelector(`.wrapper`)
-const wrapperResolution = 
+
+const mainMenu = () => 
 {
-    width: wrapper.clientWidth,
-    height: wrapper.clientHeight
+    gsap.fromTo(`.text1`, {opacity: 0}, {opacity: 1, duration: 6, stagger: 1})
+    gsap.fromTo(`.text1`, {y: -500}, {y: 0, duration: 3, stagger: 1})
+
+    setTimeout(
+        ()=>
+        {
+            gsap.fromTo(`.text2`, {opacity: 0}, {opacity: 1, duration: 3, stagger: 1})
+            gsap.fromTo(`.text2`, {y: 500}, {y: 0, duration: 1, stagger: 1})
+        }, 2500
+    )
 }
 
-const clearScreen = ()=>
+const clearScreen = () =>
 {
     gsap.fromTo(`.text1`, {opacity: 1}, {opacity: 0, duration: 2})
     gsap.fromTo(`.text1`, {y: 0}, {y: -500, duration: 2})
     gsap.fromTo(`.text2`, {opacity: 1}, {opacity: 0, duration: 2})
-    gsap.fromTo(`.text2`, {y: 0}, {y: 500, duration: 1})
+    gsap.fromTo(`.text2`, {y: 0}, {y: 500, duration: 2})
     gsap.fromTo(uniforms.transition2Value, {value: 0.23}, {value: 1.0, duration: 3})
-    setTimeout(()=>{wrapper.style.zIndex = `-1`}, 2000)
+    setTimeout(()=>{wrapper.style.zIndex = `-1`; }, 1500)
+}
+
+const resetExploreMenu = () => 
+{
+    hidePOI = false
+    musicPlay = false
+    autoHideText[0].textContent = `Hide`
+    autoHideText[1].textContent = `Play`
+    sceneMusic.stop()
+}
+
+const exploreMenu = () => 
+{
+    setTimeout(()=>
+    {
+        backMenuButton.classList.add(`visible`)
+        poiButton.classList.add(`visible`)
+        playButton.classList.add(`visible`)
+        stopButton.classList.add(`visible`)
+        resetControlButton.classList.add(`visible`)
+
+        setTimeout(()=>
+        {
+            poiButton.classList.add(`trans-width`)
+            playButton.classList.add(`trans-width`)
+            stopButton.classList.add(`trans-width`)
+            backMenuButton.classList.add(`trans-width`)
+            resetControlButton.classList.add(`trans-width`)
+        }, 1350)
+    }, 1500)
 }
 
 const menuScreen = () => 
@@ -680,13 +847,28 @@ const menuScreen = () =>
     gsap.fromTo(`.text2`, {opacity: 0}, {opacity: 1, duration: 2})
     gsap.fromTo(`.text2`, {y: 500}, {y: 0, duration: 2})
     gsap.fromTo(uniforms.transition2Value, {value: 1.0}, {value: 0.23, duration: 3})
+    resetCameraPOI()
+    autoHideText[3].textContent = ``
+    poiButton.classList.remove(`trans-width`)
+    playButton.classList.remove(`trans-width`)
+    stopButton.classList.remove(`trans-width`)
+    backMenuButton.classList.remove(`trans-width`)
+    resetControlButton.classList.remove(`trans-width`)
+    backMenuButton.classList.remove(`visible`)
+    poiButton.classList.remove(`visible`)
+    playButton.classList.remove(`visible`)
+    stopButton.classList.remove(`visible`)
+    resetControlButton.classList.remove(`visible`)
     wrapper.style.zIndex = `0`
+    resetExploreMenu()
+    setTimeout(()=>{autoHideText[3].textContent = `Menu`}, 500)
 }
 
 const enableControl = {
     exploreMode: () => 
     {
         clearScreen()
+        exploreMenu()
         gsap.fromTo(camera.position, {x: -50, y: 17, z: 82}, {x: -15, y: 8, z: 21, duration: 2, ease: `circ.out`})
         explore = true
         control.enabled = true
@@ -695,12 +877,16 @@ const enableControl = {
 
     autoPlayMode: () => 
     {
+        pausingTween()
         menuScreen()
+        clearingTimeout()
+        cinTween[2].play(0)
+        points.forEach((point) => {point.element.classList.remove(`visible`)})
         gsap.fromTo(camera.position, {x: -15, y: 8, z: 21}, {x: -50, y: 17, z: 82, duration: 2, ease: `circ.out`})
         explore = false
         control.enabled = false
-        camera.position.set(-50, 17, 82)
         camera.lookAt(0,0,0)
+        sceneMusic.stop()
     }
 }
 
@@ -708,51 +894,52 @@ const enableControl = {
 const startButton = document.querySelector(`.start-btn`)
 const exploreButton = document.querySelector(`.explore-btn`)
 const aboutButton = document.querySelector(`.about-btn`)
-// const 
+const backMenuButton = document.querySelector(`.back-btn`)
+const poiButton = document.querySelector(`.poi-btn`)
+const playButton = document.querySelector(`.play-btn`)
+const stopButton = document.querySelector(`.stop-btn`)
+const resetControlButton = document.querySelector(`.reset-btn`)
+const autoHideText = document.querySelectorAll(`.hide-txt`)
+const changeIcon = document.querySelectorAll(`.icon-change`)
+let hidePOI = false
+let musicPlay = false
 
-gsap.fromTo(`.text1`, {opacity: 0}, {opacity: 1, duration: 6, stagger: 1})
-gsap.fromTo(`.text1`, {y: -500}, {y: 0, duration: 3, stagger: 1})
-
-setTimeout(
-    ()=>
-    {
-        gsap.fromTo(`.text2`, {opacity: 0}, {opacity: 1, duration: 3, stagger: 1})
-        gsap.fromTo(`.text2`, {y: 500}, {y: 0, duration: 1, stagger: 1})
-    }, 5000
-)
+mainMenu()
 
 startButton.addEventListener(`mouseover`, ()=>
 {
-    gsap.to(`.start-btn`, {fontSize: 70, duration: 0.5})
+    gsap.to(`.start-text`, {scale: 2, duration: 0.5})
 })
 
 startButton.addEventListener(`mouseout`, ()=>
 {
-    gsap.to(`.start-btn`, {fontSize: 38, duration: 0.5})
+    gsap.to(`.start-text`, {scale: 1, duration: 0.5})
 })
 
 exploreButton.addEventListener(`mouseover`, ()=>
 {
-    gsap.to(`.explore-btn`, {fontSize: 70, duration: 0.5})
+    gsap.to(`.explore-text`, {scale: 2, duration: 0.5})
 })
 
 exploreButton.addEventListener(`mouseout`, ()=>
 {
-    gsap.to(`.explore-btn`, {fontSize: 38, duration: 0.5})
+    gsap.to(`.explore-text`, {scale: 1, duration: 0.5})
 })
 
 aboutButton.addEventListener(`mouseover`, ()=>
 {
-    gsap.to(`.about-btn`, {fontSize: 70, duration: 0.5})
+    gsap.to(`.about-text`, {scale: 2, duration: 0.5})
 })
 
 aboutButton.addEventListener(`mouseout`, ()=>
 {
-    gsap.to(`.about-btn`, {fontSize: 38, duration: 0.5})
+    gsap.to(`.about-text`, {scale: 1, duration: 0.5})
 })
 
 startButton.addEventListener(`click`, ()=>
 {
+    backMenuButton.classList.add(`visible`)
+    setTimeout(()=>{backMenuButton.classList.add(`trans-width`)}, 1350)
     clearScreen()
     audioListener.context.resume()
     sceneMusic.play() 
@@ -760,6 +947,184 @@ startButton.addEventListener(`click`, ()=>
 })
 
 exploreButton.addEventListener(`click`, enableControl.exploreMode)
+
+backMenuButton.addEventListener(`mouseover`, ()=>
+{
+    autoHideText[3].classList.add(`visible`)
+})
+
+backMenuButton.addEventListener(`mouseout`, ()=>
+{
+    autoHideText[3].classList.remove(`visible`)
+})
+
+backMenuButton.addEventListener(`click`, enableControl.autoPlayMode)
+
+poiButton.addEventListener(`click`, ()=> 
+{
+    if(hidePOI === false) 
+    {
+        changeIcon[0].innerHTML = 
+        `<span class="iconify-inline noselect" data-icon="ion:eye"></span>`
+        autoHideText[0].textContent = `Show`
+        hideAllPOI()
+        hidePOI = true
+    }
+    else if(hidePOI === true) 
+    {
+        changeIcon[0].innerHTML = 
+        `<span class="iconify-inline noselect" data-icon="ion:eye-off"></span>`
+        autoHideText[0].textContent = `Hide`
+        showAllPOI()
+        hidePOI = false
+    }
+})
+
+playButton.addEventListener(`click`, ()=> 
+{
+    if(musicPlay === false) 
+    {
+        changeIcon[1].innerHTML = 
+        `<span class="iconify-inline noselect" data-icon="ion:pause"></span>`
+        autoHideText[1].textContent = `Pause`
+        sceneMusic.play()
+        sceneMusic.setLoop(true)
+        musicPlay = true
+    }
+    else if(musicPlay === true) 
+    {
+        changeIcon[1].innerHTML = 
+        `<span class="iconify-inline noselect" data-icon="ion:play"></span>`
+        autoHideText[1].textContent = `Play`
+        sceneMusic.pause()
+        musicPlay = false
+    }
+})
+
+poiButton.addEventListener(`mouseover`, ()=>
+{
+    autoHideText[0].classList.add(`visible`)
+})
+
+poiButton.addEventListener(`mouseout`, ()=>
+{
+    autoHideText[0].classList.remove(`visible`)
+})
+
+playButton.addEventListener(`mouseover`, ()=>
+{
+    autoHideText[1].classList.add(`visible`)
+})
+
+playButton.addEventListener(`mouseout`, ()=>
+{
+    autoHideText[1].classList.remove(`visible`)
+})
+
+stopButton.addEventListener(`mouseover`, ()=>
+{
+    autoHideText[2].classList.add(`visible`)
+})
+
+stopButton.addEventListener(`mouseout`, ()=>
+{
+    autoHideText[2].classList.remove(`visible`)
+})
+
+stopButton.addEventListener(`click`, ()=> 
+{
+    changeIcon[1].innerHTML = 
+    `<span class="iconify-inline noselect" data-icon="fa-solid:play"></span>`
+    autoHideText[1].textContent = `Play`
+    musicPlay = false
+    sceneMusic.setLoop(false)
+    sceneMusic.stop()
+})
+
+resetControlButton.addEventListener(`mouseover`, ()=>
+{
+    autoHideText[4].classList.add(`visible`)
+})
+
+resetControlButton.addEventListener(`mouseout`, ()=>
+{
+    autoHideText[4].classList.remove(`visible`)
+})
+
+resetControlButton.addEventListener(`click`, ()=> 
+{
+    resetCameraPOI()
+    gsap.to(camera.position, {x: -15, y: 8, z: 21, duration: 1, ease: `circ.out`})
+    gsap.to(control.target, {x: 0, y: 0, z: 0, duration: 1})
+})
+
+// * HTML POI
+const resetCameraPOI =  () => 
+{
+    swing = false
+    camera.fov = 45
+    camera.updateProjectionMatrix()
+}
+
+points[0].element.addEventListener(`click`,
+    () => 
+    {
+        gsap.to(camera.position, {x: points[0].position.x, y: points[0].position.y + 0.1, z: points[0].position.z, duration: 2})
+        gsap.to(control.target, {x: points[0].position.x - .7, y: points[0].position.y + 0.2, z: points[0].position.z + .3, duration: 2})
+        resetCameraPOI()
+    }
+)
+
+points[1].element.addEventListener(`click`,
+    () => 
+    {
+        gsap.to(camera.position, {x: points[1].position.x, y: points[1].position.y , z: points[1].position.z, duration: 2})
+        gsap.to(control.target, {x: points[1].position.x - 0.2, y: points[1].position.y - 0.8, z: points[1].position.z + 1, duration: 2})
+        resetCameraPOI()
+    }
+)
+
+points[2].element.addEventListener(`click`,
+    () => 
+    {
+        gsap.to(camera.position, {x: points[2].position.x, y: points[2].position.y + 0.2 , z: points[2].position.z, duration: 2})
+        gsap.to(control.target, {x: points[2].position.x + 0.1, y: points[2].position.y - 0.1, z: points[2].position.z , duration: 2})
+        resetCameraPOI()
+    }
+)
+
+points[3].element.addEventListener(`click`,
+    () => 
+    {
+        gsap.to(camera.position, {x: points[3].position.x, y: points[3].position.y , z: points[3].position.z, duration: 2})
+        gsap.to(control.target, {x: points[3].position.x + 0.03, y: points[3].position.y - 0.01, z: points[3].position.z - 0.05 , duration: 2})
+        resetCameraPOI()
+    }
+)
+
+points[4].element.addEventListener(`click`,
+    () => 
+    {
+        gsap.to(camera.position, {x: points[4].position.x, y: points[4].position.y , z: points[4].position.z, duration: 2})
+        gsap.to(control.target, {x: points[4].position.x + 0.01 , y: points[4].position.y - 0.02 , z: points[4].position.z + 0.14 , duration: 2})
+        resetCameraPOI()
+    }
+)
+
+points[5].element.addEventListener(`click`,
+    () => 
+    {
+        gsap.to(camera.position, {x: points[5].position.x, y: points[5].position.y , z: points[5].position.z, duration: 2})
+        gsap.to(control.target, {x: points[5].position.x + 0.2 , y: points[5].position.y - 0.02 , z: points[5].position.z + 0.14 , duration: 2})
+    
+        setTimeout(
+            ()=> 
+            {
+                swing = true
+            }, 2000
+        )
+    }
+)
 
 // * DEBUG
 const cameraConfig = gui.addFolder(`camera config`)
@@ -797,6 +1162,18 @@ cameraConfig
 .add(point.position, `z`).name(`look point z`)
 .min(-20).max(20).step(0.001)
 
+cameraConfig
+.add(control.target, `x`).name(`target point x`)
+.min(-20).max(20).step(0.001)
+
+cameraConfig
+.add(control.target, `y`).name(`target point y`)
+.min(-20).max(20).step(0.001)
+
+cameraConfig
+.add(control.target, `z`).name(`target point z`)
+.min(-20).max(20).step(0.001)
+
 const lightConfig = gui.addFolder(`light Config`)
 
 lightConfig
@@ -821,11 +1198,15 @@ folder.add(filmPass.uniforms.nIntensity, 'value', 0, 1).name('noise intensity')
 folder.add(filmPass.uniforms.sIntensity, 'value', 0, 1).name('scanline intensity')
 folder.add(filmPass.uniforms.sCount, 'value', 0, 1000).name('scanline count')
 
-gui
-.add(enableControl, `exploreMode`)
+gui.hide()
 
-gui
-.add(enableControl, `autoPlayMode`)
+// // * Auto-hide address bar
+// window.addEventListener(`load`, ()=>
+// {
+//     setTimeout(()=>
+//     {
+//         window.scrollTo(0,1)
+//     }, 0)
+// })
 
-// gui.hide()
-
+// TODO REQUEST FULLSCREEN

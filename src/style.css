@@ -1,3 +1,12 @@
+.noselect
+{
+    -webkit-user-select: none !important; 
+    -khtml-user-select: none !important; 
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+}
+
 *
 {
     margin: 0;
@@ -29,42 +38,447 @@ body
 {
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0);
     text-align: center;
-    /* pointer-events: none; */
-
-    -webkit-user-select: none !important; 
-    -khtml-user-select: none !important; 
-    -moz-user-select: none !important;
-    -ms-user-select: none !important;
-    user-select: none !important;
 }
 
 .menu-title
 {
     opacity: 0;
-    font-family: 'Architects Daughter', cursive;
-    font-size: 80px;
-    margin-top: 80px;
+    margin-top: 9vmin;
 }
 
 .name
 {
     opacity: 0;
-    font-family: 'Nanum Brush Script', cursive;
-    font-size: 38px;
-    margin-top: 20px;
+    margin-top: 2.2vmin;
 }
 
 .menu-btn-group
 {
-    font-family: 'Architects Daughter', cursive;
-    margin-top: 350px;
+    padding-top: 36vmin;
 }
 
 .start-btn, .explore-btn, .about-btn
 {
     opacity: 0;
-    font-size: 38px;
-    padding: 5px;
+    padding: 1.2vmin;
+}
+
+.title-text
+{
+    font-family: 'Architects Daughter', cursive;
+    font-size: 8.5vmin;
+}
+
+.name-text
+{
+    font-family: 'Nanum Brush Script', cursive;
+    font-size: 4vmin;
+} 
+
+.start-text, .explore-text, .about-text,
+.stop-btn, .back-btn, .play-btn, .poi-btn,
+.reset-btn
+{
+    font-family: 'Architects Daughter', cursive;
+    font-size: 4vmin;
+}
+
+.point
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+.point:hover .desc 
+{
+    opacity: 1;
+    transition: opacity 0.3s;
+}
+
+.point.visible .label
+{
+    transform: scale(1.5);
+}
+
+.point .label
+{
+    position: absolute;
+    top: -2.2vmin;
+    left: -2.2vmin;
+    width: 4.4vmin;
+    height: 4.4vmin;
+    border-radius: 50%;
+    background: #00000060;
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    line-height: 4.4vmin;
+    font-weight: 100;
+    font-size: 1.5vmin;
+    cursor: pointer;
+    transform: scale(0);
+    transition: transform 0.3s;
+}
+
+.point .desc
+{
+    position: absolute;
+    top: 3.3vmin;
+    left: -13.2vmin;
+    width: 22.02vmin;
+    padding: 2.2vmin;
+    border-radius: 0.44vmin;
+    background-color: #000000c4;
+    color: #ffffff;
+    line-height: 2.2vmin;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 100;
+    font-size: 1.54vmin;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+
+.hide-txt.visible
+{
+    transform: translateX(0) scaleX(1);
+    opacity: 1;
+}
+
+.hide-txt
+{
+    position: inherit;
+    display: inline-block;
+    padding-left: 2vmin;
+    opacity: 0;
+    transform: translateX(-7vmin) scaleX(0);
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.poi-btn, .play-btn, .stop-btn, .back-btn, .reset-btn
+{
+    position: absolute;
+    width: 4vmin;
+    background-color: #00000086;
+    color: #ffffff;
+    padding: 1vmin;
+    border-radius: 1vmin;
+}
+
+.back-btn.visible
+{
+    transform: translateX(5vmin) translateY(90vmin);
+}
+
+.back-btn
+{
+    transform: translateX(-30vmin) translateY(90vmin);
+    transition: transform 1s;
+}
+
+.reset-btn.visible
+{
+    transform: translateX(5vmin) translateY(58vmin);
+}
+
+.reset-btn
+{
+    transform: translateX(-30vmin) translateY(58vmin);
+    transition: transform 1s;
+    transition-delay: 0.4s;
+}
+
+.poi-btn.visible
+{
+    transform: translateX(5vmin) translateY(66vmin);
+}
+
+.poi-btn
+{
+    transform: translateX(-30vmin) translateY(66vmin);
+    transition: transform 1s;
+    transition-delay: 0.3s;
+}
+
+.play-btn.visible
+{
+    transform: translateX(5vmin) translateY(74vmin);
+}
+
+.play-btn
+{
+    transform: translateX(-30vmin) translateY(74vmin);
+    transition: transform 1s;
+    transition-delay: 0.2s;
+} 
+
+.stop-btn.visible
+{
+    transform: translateX(5vmin) translateY(82vmin);
+}
+
+.stop-btn
+{
+    transform: translateX(-30vmin) translateY(82vmin);
+    transition: transform 1s;
+    transition-delay: .1s;
+}
+
+.trans-width:hover
+{
+    width: 17vmin;
+}
+
+.trans-width
+{
+    width: 4vmin;
+    transition: width 0.3s;
+}
+
+@media screen and (orientation: portrait) and (max-width: 1440px) and (max-height: 3120px)
+{
+    .menu-title
+    {
+        opacity: 0;
+        margin-top: 20vmax;
+    }
+
+    .menu-btn-group
+    {
+        padding-top: 96vmin;
+    }
+}
+
+@media screen and (orientation: portrait) and (max-width: 1284px) and (max-height: 2778px)
+{
+    .menu-title
+    {
+        opacity: 0;
+        margin-top: 35vmin;
+    }
+
+    .menu-btn-group
+    {
+        padding-top: 98vmin;
+    }
+}
+
+@media screen and (orientation: portrait) and (max-width: 1024px) and (max-height: 1367px)
+{
+    .menu-title
+    {
+        opacity: 0;
+        margin-top: 9vmin;
+    }
+
+    .menu-btn-group
+    {
+        padding-top: 36vmin;
+    }
+}
+
+@media screen and (orientation: portrait) and (max-width: 1024px) and (max-height: 1366px)
+{
+    .menu-title
+    {
+        opacity: 0;
+        margin-top: 16vmin;
+    }
+
+    .menu-btn-group
+    {
+        padding-top: 53vmin;
+    }
+}
+
+@media screen and (orientation: portrait) and (max-width: 1024px) and (max-height: 1365px)
+{
+    .menu-title
+    {
+        opacity: 0;
+        margin-top: 9vmin;
+    }
+
+    .menu-btn-group
+    {
+        padding-top: 36vmin;
+    }
+}
+
+@media screen and (orientation: portrait) and (max-width: 768px) and (max-height: 1024px)
+{
+    .menu-title
+    {
+        opacity: 0;
+        margin-top: 14vmin;
+    }
+
+    .menu-btn-group
+    {
+        padding-top: 60vmin;
+    }
+}
+
+@media screen and (orientation: portrait) and (max-width: 720px)
+{
+    .menu-title
+    {
+        opacity: 0;
+        margin-top: 9vmin;
+    }
+
+    .menu-btn-group
+    {
+        padding-top: 35vmin;
+    }
+}
+
+@media screen and (orientation: portrait) and (max-width: 600px) 
+{
+    .menu-title
+    {
+        opacity: 0;
+        margin-top: 15vmin;
+    }
+
+    .menu-btn-group
+    {
+        padding-top: 67vmin;
+    }
+}
+
+@media screen and (orientation: portrait) and (max-width: 515px) 
+{
+    .menu-title
+    {
+        opacity: 0;
+        margin-top: 20vmin;
+    }
+
+    .menu-btn-group
+    {
+        padding-top: 73vmin;
+    }
+}
+
+@media screen and (orientation: portrait) and (max-width: 414px)
+{
+    .menu-title
+    {
+        opacity: 0;
+        margin-top: 35vmin;
+    }
+
+    .menu-btn-group
+    {
+        padding-top: 83vmin;
+    }
+
+    .start-btn, .explore-btn, .about-btn
+    {
+        opacity: 0;
+        padding: 3vmin;
+    }
+}
+
+@media screen and (orientation: portrait) and (max-width: 414px) and (max-height: 736px)
+{
+    .menu-title
+    {
+        opacity: 0;
+        margin-top: 23vmin;
+    }
+
+    .menu-btn-group
+    {
+        padding-top: 83vmin;
+    }
+
+    .start-btn, .explore-btn, .about-btn
+    {
+        opacity: 0;
+        padding: 3vmin;
+    }
+}
+
+@media screen and (orientation: portrait) and (max-width: 375px) and (max-height: 812px)
+{
+    .menu-title
+    {
+        opacity: 0;
+        margin-top: 39vmin;
+    }
+
+    .menu-btn-group
+    {
+        padding-top: 90vmin;
+    }
+
+    .start-btn, .explore-btn, .about-btn
+    {
+        opacity: 0;
+        padding: 3vmin;
+    }
+}
+
+@media screen and (orientation: portrait) and (max-width: 375px) and (max-height: 667px)
+{
+    .menu-title
+    {
+        opacity: 0;
+        margin-top: 20vmin;
+    }
+
+    .menu-btn-group
+    {
+        padding-top: 90vmin;
+    }
+
+    .start-btn, .explore-btn, .about-btn
+    {
+        opacity: 0;
+        padding: 3vmin;
+    }
+}
+
+@media screen and (orientation: portrait) and (max-width: 360px) 
+{
+    .menu-title
+    {
+        opacity: 0;
+        margin-top: 33vmin;
+    }
+
+    .menu-btn-group
+    {
+        padding-top: 78vmin;
+    }
+
+    .start-btn, .explore-btn, .about-btn
+    {
+        opacity: 0;
+        padding: 3vmin;
+    }
+}
+
+@media screen and (orientation: portrait) and (max-width: 280px)
+{
+    .menu-title
+    {
+        opacity: 0;
+        margin-top: 35vmin;
+    }
+
+    .menu-btn-group
+    {
+        padding-top: 110vmin;
+    }
+
+    .start-btn, .explore-btn, .about-btn
+    {
+        opacity: 0;
+        padding: 3vmin;
+    }
 }
