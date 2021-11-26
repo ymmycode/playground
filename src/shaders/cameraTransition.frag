@@ -41,6 +41,7 @@ float cnoise(vec2 P){
 
 void main()
 {
+    // float alpha = step(1.0, abs(cnoise((vUv - 0.5) * transitionValue * 5.0) + transitionValue ) * transitionValue);
     float alpha = abs(cnoise((vUv - 0.5) * transitionValue * 5.0) + transitionValue ) * transitionValue;
     // gl_FragColor = vec4(0.5451, 0.4588, 0.1725, alpha);
     gl_FragColor = vec4(0.6275, 0.6196, 0.2863, alpha);
