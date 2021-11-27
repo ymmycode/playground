@@ -5,7 +5,7 @@ import Stats from 'three/examples/jsm/libs/stats.module.js'
 import gsap from 'gsap'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { DRACOLoader } from 'three/examples/jsm/loaders/dracoloader'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
@@ -14,6 +14,7 @@ import cameraTransitionVert from  './shaders/cameraTransition.vert'
 import cameraTransitionFrag from  './shaders/cameraTransition.frag'
 import loadMenuVert from './shaders/loadMenu.vert'
 import loadMenuFrag from './shaders/loadMenu.frag'
+import isMobile from 'is-mobile'
 
 // * LOADING MANAGER
 const manager = new THREE.LoadingManager() 
@@ -772,17 +773,6 @@ const update = (time) =>
 }
 update()
 
-// // * ADDITIONAL EVENT
-// window.addEventListener(`keydown`, (evt) => 
-// {
-//     if(evt.code === `Space`)
-//     {
-        // audioListener.context.resume()
-        // sceneMusic.play() 
-        // cinematic()
-//     }
-// })
-
 // * CONFIG
 const wrapper = document.querySelector(`.wrapper`)
 
@@ -831,11 +821,15 @@ const exploreMenu = () =>
 
         setTimeout(()=>
         {
-            poiButton.classList.add(`trans-width`)
-            playButton.classList.add(`trans-width`)
-            stopButton.classList.add(`trans-width`)
-            backMenuButton.classList.add(`trans-width`)
-            resetControlButton.classList.add(`trans-width`)
+            if(isMobile()){}
+            else
+            {
+                poiButton.classList.add(`trans-width`)
+                playButton.classList.add(`trans-width`)
+                stopButton.classList.add(`trans-width`)
+                backMenuButton.classList.add(`trans-width`)
+                resetControlButton.classList.add(`trans-width`)
+            }
         }, 1350)
     }, 1500)
 }
@@ -882,6 +876,10 @@ const enableControl = {
         clearingTimeout()
         cinTween[2].play(0)
         points.forEach((point) => {point.element.classList.remove(`visible`)})
+        changeIcon[0].innerHTML = 
+        `<span class="iconify-inline noselect" data-icon="ion:eye-off"></span>`
+        changeIcon[1].innerHTML = 
+        `<span class="iconify-inline noselect" data-icon="ion:play"></span>`
         gsap.fromTo(camera.position, {x: -15, y: 8, z: 21}, {x: -50, y: 17, z: 82, duration: 2, ease: `circ.out`})
         explore = false
         control.enabled = false
@@ -939,7 +937,7 @@ aboutButton.addEventListener(`mouseout`, ()=>
 startButton.addEventListener(`click`, ()=>
 {
     backMenuButton.classList.add(`visible`)
-    setTimeout(()=>{backMenuButton.classList.add(`trans-width`)}, 1350)
+    setTimeout(()=>{!isMobile() && backMenuButton.classList.add(`trans-width`)}, 1350)
     clearScreen()
     audioListener.context.resume()
     sceneMusic.play() 
@@ -950,7 +948,7 @@ exploreButton.addEventListener(`click`, enableControl.exploreMode)
 
 backMenuButton.addEventListener(`mouseover`, ()=>
 {
-    autoHideText[3].classList.add(`visible`)
+    !isMobile() && autoHideText[3].classList.add(`visible`)
 })
 
 backMenuButton.addEventListener(`mouseout`, ()=>
@@ -1003,7 +1001,7 @@ playButton.addEventListener(`click`, ()=>
 
 poiButton.addEventListener(`mouseover`, ()=>
 {
-    autoHideText[0].classList.add(`visible`)
+    !isMobile() && autoHideText[0].classList.add(`visible`)
 })
 
 poiButton.addEventListener(`mouseout`, ()=>
@@ -1013,7 +1011,7 @@ poiButton.addEventListener(`mouseout`, ()=>
 
 playButton.addEventListener(`mouseover`, ()=>
 {
-    autoHideText[1].classList.add(`visible`)
+    !isMobile() && autoHideText[1].classList.add(`visible`)
 })
 
 playButton.addEventListener(`mouseout`, ()=>
@@ -1023,7 +1021,7 @@ playButton.addEventListener(`mouseout`, ()=>
 
 stopButton.addEventListener(`mouseover`, ()=>
 {
-    autoHideText[2].classList.add(`visible`)
+    !isMobile() && autoHideText[2].classList.add(`visible`)
 })
 
 stopButton.addEventListener(`mouseout`, ()=>
@@ -1043,7 +1041,7 @@ stopButton.addEventListener(`click`, ()=>
 
 resetControlButton.addEventListener(`mouseover`, ()=>
 {
-    autoHideText[4].classList.add(`visible`)
+    !isMobile() && autoHideText[4].classList.add(`visible`)
 })
 
 resetControlButton.addEventListener(`mouseout`, ()=>
@@ -1126,6 +1124,29 @@ points[5].element.addEventListener(`click`,
     }
 )
 
+// * FULLSCREEN
+const fullscreenButton = document.querySelector(`.screen-icon`)
+
+const toggleForceLandscapeFullscreen = ()=> 
+{
+    const doc = window.document
+    const docEl = doc.documentElement
+
+    let requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen
+    let cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen
+
+    if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+        requestFullScreen.call(docEl)
+        isMobile() && screen.orientation.lock(`landscape`)
+    }
+    else {
+        isMobile() && screen.orientation.unlock()
+        cancelFullScreen.call(doc)
+    }
+}
+
+fullscreenButton.addEventListener(`click`, toggleForceLandscapeFullscreen)
+
 // * DEBUG
 const cameraConfig = gui.addFolder(`camera config`)
 cameraConfig.open()
@@ -1199,14 +1220,3 @@ folder.add(filmPass.uniforms.sIntensity, 'value', 0, 1).name('scanline intensity
 folder.add(filmPass.uniforms.sCount, 'value', 0, 1000).name('scanline count')
 
 gui.hide()
-
-// // * Auto-hide address bar
-// window.addEventListener(`load`, ()=>
-// {
-//     setTimeout(()=>
-//     {
-//         window.scrollTo(0,1)
-//     }, 0)
-// })
-
-// TODO REQUEST FULLSCREEN
