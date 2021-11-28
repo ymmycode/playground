@@ -16,8 +16,42 @@ import loadMenuVert from './shaders/loadMenu.vert'
 import loadMenuFrag from './shaders/loadMenu.frag'
 import isMobile from 'is-mobile'
 
+// * LOADING SCREEN
+const loadingScreen = document.querySelector(`.loading-screen`)
+const loadCounter = document.querySelector(`.counter`)
+const engageButton = document.querySelector(`.loading-btn`)
+
+engageButton.addEventListener(`click`, ()=>
+{
+    loadingScreen.classList.add(`hide`)
+    setTimeout(()=>{
+        loadingScreen.style.zIndex = `-1`
+    },1000)
+    audioListener.context.resume()
+    isMobile({tablet: true}) && toggleForceLandscapeFullscreen()
+    mainMenu()
+})
+
 // * LOADING MANAGER
-const manager = new THREE.LoadingManager() 
+const manager = new THREE.LoadingManager(
+    //Loaded
+    ()=>
+    {
+        setTimeout(
+            ()=>
+            {
+                engageButton.classList.add(`visible`)
+            }, 1000
+        )
+    },
+
+    //Progress
+    (_, itemsLoaded, itemsTotal)=>
+    {
+        const progress = (itemsLoaded / itemsTotal) * 100;
+        loadCounter.textContent = `${Math.round(progress)}%`
+    }
+) 
 
 // * DEBUG GUI
 const gui = new dat.GUI()
@@ -781,11 +815,15 @@ const mainMenu = () =>
     gsap.fromTo(`.text1`, {opacity: 0}, {opacity: 1, duration: 6, stagger: 1})
     gsap.fromTo(`.text1`, {y: -500}, {y: 0, duration: 3, stagger: 1})
 
+    gsap.fromTo(camera.position, {x: -15, y: 8, z: 21}, {x: -50, y: 17, z: 82, duration: 2, ease: `circ.out`})
+    cinTween[2].play(0)
+    gsap.fromTo(uniforms.transition2Value, {value: 1.0}, {value: 0.23, duration: 3})
+
     setTimeout(
         ()=>
         {
-            gsap.fromTo(`.text2`, {opacity: 0}, {opacity: 1, duration: 3, stagger: 1})
-            gsap.fromTo(`.text2`, {y: 500}, {y: 0, duration: 1, stagger: 1})
+            gsap.fromTo(`.text2`, {opacity: 0}, {opacity: 1, duration: 1, stagger: 0.5})
+            gsap.fromTo(`.text2`, {y: 500}, {y: 0, duration: 1, stagger: 0.5})
         }, 2500
     )
 }
@@ -821,7 +859,7 @@ const exploreMenu = () =>
 
         setTimeout(()=>
         {
-            if(isMobile()){}
+            if(isMobile({tablet: true})){}
             else
             {
                 poiButton.classList.add(`trans-width`)
@@ -902,8 +940,6 @@ const changeIcon = document.querySelectorAll(`.icon-change`)
 let hidePOI = false
 let musicPlay = false
 
-mainMenu()
-
 startButton.addEventListener(`mouseover`, ()=>
 {
     gsap.to(`.start-text`, {scale: 2, duration: 0.5})
@@ -937,9 +973,8 @@ aboutButton.addEventListener(`mouseout`, ()=>
 startButton.addEventListener(`click`, ()=>
 {
     backMenuButton.classList.add(`visible`)
-    setTimeout(()=>{!isMobile() && backMenuButton.classList.add(`trans-width`)}, 1350)
+    setTimeout(()=>{!isMobile({tablet: true}) && backMenuButton.classList.add(`trans-width`)}, 1350)
     clearScreen()
-    audioListener.context.resume()
     sceneMusic.play() 
     cinematic()
 })
@@ -948,7 +983,7 @@ exploreButton.addEventListener(`click`, enableControl.exploreMode)
 
 backMenuButton.addEventListener(`mouseover`, ()=>
 {
-    !isMobile() && autoHideText[3].classList.add(`visible`)
+    !isMobile({tablet: true}) && autoHideText[3].classList.add(`visible`)
 })
 
 backMenuButton.addEventListener(`mouseout`, ()=>
@@ -1001,7 +1036,7 @@ playButton.addEventListener(`click`, ()=>
 
 poiButton.addEventListener(`mouseover`, ()=>
 {
-    !isMobile() && autoHideText[0].classList.add(`visible`)
+    !isMobile({tablet: true}) && autoHideText[0].classList.add(`visible`)
 })
 
 poiButton.addEventListener(`mouseout`, ()=>
@@ -1011,7 +1046,7 @@ poiButton.addEventListener(`mouseout`, ()=>
 
 playButton.addEventListener(`mouseover`, ()=>
 {
-    !isMobile() && autoHideText[1].classList.add(`visible`)
+    !isMobile({tablet: true}) && autoHideText[1].classList.add(`visible`)
 })
 
 playButton.addEventListener(`mouseout`, ()=>
@@ -1021,7 +1056,7 @@ playButton.addEventListener(`mouseout`, ()=>
 
 stopButton.addEventListener(`mouseover`, ()=>
 {
-    !isMobile() && autoHideText[2].classList.add(`visible`)
+    !isMobile({tablet: true}) && autoHideText[2].classList.add(`visible`)
 })
 
 stopButton.addEventListener(`mouseout`, ()=>
@@ -1041,7 +1076,7 @@ stopButton.addEventListener(`click`, ()=>
 
 resetControlButton.addEventListener(`mouseover`, ()=>
 {
-    !isMobile() && autoHideText[4].classList.add(`visible`)
+    !isMobile({tablet: true}) && autoHideText[4].classList.add(`visible`)
 })
 
 resetControlButton.addEventListener(`mouseout`, ()=>
@@ -1061,6 +1096,15 @@ const resetCameraPOI =  () =>
 {
     swing = false
     camera.fov = 45
+    camera.near = 0.01
+    camera.updateProjectionMatrix()
+}
+
+const clipActive = ()=>
+{
+    swing = false
+    camera.fov = 45
+    camera.near = 1
     camera.updateProjectionMatrix()
 }
 
@@ -1069,7 +1113,7 @@ points[0].element.addEventListener(`click`,
     {
         gsap.to(camera.position, {x: points[0].position.x, y: points[0].position.y + 0.1, z: points[0].position.z, duration: 2})
         gsap.to(control.target, {x: points[0].position.x - .7, y: points[0].position.y + 0.2, z: points[0].position.z + .3, duration: 2})
-        resetCameraPOI()
+        swing === true && clipActive()
     }
 )
 
@@ -1078,7 +1122,8 @@ points[1].element.addEventListener(`click`,
     {
         gsap.to(camera.position, {x: points[1].position.x, y: points[1].position.y , z: points[1].position.z, duration: 2})
         gsap.to(control.target, {x: points[1].position.x - 0.2, y: points[1].position.y - 0.8, z: points[1].position.z + 1, duration: 2})
-        resetCameraPOI()
+        clipActive()
+        swing === true && clipActive()
     }
 )
 
@@ -1087,7 +1132,8 @@ points[2].element.addEventListener(`click`,
     {
         gsap.to(camera.position, {x: points[2].position.x, y: points[2].position.y + 0.2 , z: points[2].position.z, duration: 2})
         gsap.to(control.target, {x: points[2].position.x + 0.1, y: points[2].position.y - 0.1, z: points[2].position.z , duration: 2})
-        resetCameraPOI()
+        clipActive()
+        swing === true && clipActive()
     }
 )
 
@@ -1096,7 +1142,8 @@ points[3].element.addEventListener(`click`,
     {
         gsap.to(camera.position, {x: points[3].position.x, y: points[3].position.y , z: points[3].position.z, duration: 2})
         gsap.to(control.target, {x: points[3].position.x + 0.03, y: points[3].position.y - 0.01, z: points[3].position.z - 0.05 , duration: 2})
-        resetCameraPOI()
+        clipActive()
+        swing === true && clipActive()
     }
 )
 
@@ -1105,7 +1152,8 @@ points[4].element.addEventListener(`click`,
     {
         gsap.to(camera.position, {x: points[4].position.x, y: points[4].position.y , z: points[4].position.z, duration: 2})
         gsap.to(control.target, {x: points[4].position.x + 0.01 , y: points[4].position.y - 0.02 , z: points[4].position.z + 0.14 , duration: 2})
-        resetCameraPOI()
+        clipActive()
+        swing === true && clipActive()
     }
 )
 
@@ -1114,6 +1162,7 @@ points[5].element.addEventListener(`click`,
     {
         gsap.to(camera.position, {x: points[5].position.x, y: points[5].position.y , z: points[5].position.z, duration: 2})
         gsap.to(control.target, {x: points[5].position.x + 0.2 , y: points[5].position.y - 0.02 , z: points[5].position.z + 0.14 , duration: 2})
+        clipActive()
     
         setTimeout(
             ()=> 
@@ -1123,6 +1172,8 @@ points[5].element.addEventListener(`click`,
         )
     }
 )
+
+// TODO modal window for about
 
 // * FULLSCREEN
 const fullscreenButton = document.querySelector(`.screen-icon`)
@@ -1137,10 +1188,10 @@ const toggleForceLandscapeFullscreen = ()=>
 
     if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
         requestFullScreen.call(docEl)
-        isMobile() && screen.orientation.lock(`landscape`)
+        isMobile({tablet: true}) && screen.orientation.lock(`landscape`)
     }
     else {
-        isMobile() && screen.orientation.unlock()
+        isMobile({tablet: true}) && screen.orientation.unlock()
         cancelFullScreen.call(doc)
     }
 }
