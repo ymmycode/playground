@@ -679,7 +679,6 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 // * RESIZE UPDATE
 window.addEventListener(`resize`, () => 
 {
-
     // Update resolution
     resolution.width = window.innerWidth
     resolution.height = window.innerHeight
@@ -937,8 +936,17 @@ const stopButton = document.querySelector(`.stop-btn`)
 const resetControlButton = document.querySelector(`.reset-btn`)
 const autoHideText = document.querySelectorAll(`.hide-txt`)
 const changeIcon = document.querySelectorAll(`.icon-change`)
+const aboutContainer = document.querySelector(`.about-container`)
+const closeAboutButton = document.querySelector(`.close-btn`)
+const idTranslateButton = document.querySelector(`.flag-id`)
+const enTranslateButton = document.querySelector(`.flag-us`)
+const aboutText = document.querySelector(`.about-txt`)
+const githubLinkButton = document.querySelector(`.github`)
+const twitterLinkButton = document.querySelector(`.twitter`)
+const scLinkButton = document.querySelector(`.soundcloud`)
 let hidePOI = false
 let musicPlay = false
+
 
 startButton.addEventListener(`mouseover`, ()=>
 {
@@ -968,6 +976,81 @@ aboutButton.addEventListener(`mouseover`, ()=>
 aboutButton.addEventListener(`mouseout`, ()=>
 {
     gsap.to(`.about-text`, {scale: 1, duration: 0.5})
+})
+
+aboutButton.addEventListener(`click`, ()=>
+{
+    aboutContainer.classList.add(`visible`)
+    setTimeout(()=>
+    {   
+        gsap.to(`.about-txt`, {opacity: 1, duration: 2.5, ease: `power2.out`})
+        gsap.fromTo(`.about-txt`, {y: 50}, {y: 0, duration: 1, ease: `power2.out`})
+
+        gsap.fromTo(`.tool-icon`, {y: 50}, {y: 0, duration: 0.3, stagger: 0.1, ease: `power2.out`})
+        gsap.to(`.tool-icon`, {opacity: 1, duration: 0.3, stagger: 0.1, ease: `power2.out`})
+        
+        gsap.fromTo(`.social-icon`, {y: 50}, {y: 0, duration: 0.3, stagger: 0.1, ease: `power2.out`})
+        gsap.to(`.social-icon`, {opacity: 1, duration: 0.3, stagger: 0.1, ease: `power2.out`})
+    },500)
+})
+
+closeAboutButton.addEventListener(`click`, ()=>
+{
+    aboutContainer.classList.remove(`visible`)
+    gsap.to(`.about-txt`, {opacity: 0, duration: 1})
+    gsap.fromTo(`.about-txt`, {y: 0}, {y: 50, duration: 1})
+    
+    gsap.fromTo(`.tool-icon`, {y: 0}, {y: 50, duration: 0.3})
+    gsap.to(`.tool-icon`, {opacity: 0, duration: 0.3})
+
+    gsap.fromTo(`.social-icon`, {y: 0}, {y: 50, duration: 0.3})
+    gsap.to(`.social-icon`, {opacity: 0, duration: 0.3})
+})
+
+idTranslateButton.addEventListener(`click`, ()=>
+{
+    document.querySelector(`.about-title`).textContent = `Tentang`
+    aboutText.textContent = `
+    Hai, saya Achmat Fauzi, pengembang di balik aplikasi web ini menyambut Anda.
+    Mengapa saya membuat situs ini? Nah, saat itu saya mendapat ide nostalgia 
+    ketika saya melihat taman bermain di dekat rumah. Kemudian Saya berpikir,
+    "Bagaimana jika saya membuat rekreasi digital tentang bermain atau bersantai 
+    di taman bermain yang membuat orang merasa nostalgia dan damai?", maka saya 
+    membuat aplikasi web sederhana ini. 
+    `
+
+    gsap.fromTo(`.about-txt`, {opacity: 0}, {opacity: 1, duration: 2.5, ease: `power2.out`})
+    gsap.fromTo(`.about-txt`, {y: 50}, {y: 0, duration: 1, ease: `power2.out`})
+})
+
+enTranslateButton.addEventListener(`click`, ()=>
+{
+    document.querySelector(`.about-title`).textContent = `About`
+    aboutText.textContent = `
+    Hi, I'm Achmat Fauzi, the developer behind this web application welcoming you. 
+    Why did I make this website? Well, back then I come to the idea of nostalgia when 
+    I look at the playground near my home. Then I thought, "what if I create digital recreation
+    about playing or chilling at a playground that makes people feel nostalgic and peaceful?", 
+    so I make this web application.
+    `
+
+    gsap.fromTo(`.about-txt`, {opacity: 0}, {opacity: 1, duration: 2.5, ease: `power2.out`})
+    gsap.fromTo(`.about-txt`, {y: 50}, {y: 0, duration: 1, ease: `power2.out`})
+})
+
+githubLinkButton.addEventListener(`click`, ()=>
+{
+    window.open(`https://github.com/ymmycode`, `_blank`).focus()
+})
+
+twitterLinkButton.addEventListener(`click`, ()=>
+{
+    window.open(`https://twitter.com/mstrdp`, `_blank`).focus()
+})
+
+scLinkButton.addEventListener(`click`, ()=>
+{
+    window.open(`https://soundcloud.com/mstrdpiece`, `_blank`).focus()
 })
 
 startButton.addEventListener(`click`, ()=>

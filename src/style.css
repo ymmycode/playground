@@ -46,10 +46,9 @@ body
     text-align: center;
 }
 
-.screen-icon
+.screen-icon, .help-btn
 {
     position: absolute;
-    transform: translateX(3vmin) translateY(3vmin);
     width: 8vmin;
     height: 8vmin;
     border-radius: 50%;
@@ -57,6 +56,17 @@ body
     color: #ffffff;
     text-align: center;
     font-size: 7vmin;
+}
+
+.screen-icon
+{
+    transform: translateX(3vmin) translateY(3vmin);
+}
+
+.help-btn
+{
+    font-size: 6vmin;
+    transform: translateX(3vmin) translateY(13vmin);
 }
 
 .menu-title
@@ -311,6 +321,74 @@ body
     padding-right: 4vmin;
     opacity: 0;
     transition: opacity 3s;
+}
+
+.close-btn
+{
+    font-size: 6vmin;
+    text-align: right !important;
+}
+
+.about-container.visible
+{
+    transform: translate(-50%, -50%);
+}
+
+.about-container
+{
+    position: absolute;
+    display: table;
+    width: 80%;
+    height: 83%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 150%);
+    transition: transform 1s;
+}
+
+.about-mid
+{
+    display: table-cell;
+    padding-top: 5vmin;
+    padding-left: 10vmin;
+    padding-right: 10vmin;
+    background-color: #ffffff;
+    border-radius: 10%;
+}
+
+.about-txt
+{
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 3vmin;
+    text-align: justify;
+    line-height: 4.2vmin;
+    opacity: 0;
+}
+
+.about-title, .tools-txt, .socials-txt
+{
+    font-family: 'Architects Daughter', cursive;
+    font-size: 6vmin;
+    line-height: 12vmin;
+    padding-right: 3vmin;
+}
+
+.tools-icon, .socials-icon
+{
+    font-size: 4.5vmin;
+    padding-left: 4vmin;
+}
+
+.tool-icon
+/* , .social-icon */
+{
+    opacity: 0;
+}
+
+.flag
+{
+    font-size: 4.5vmin;
+    padding-left: 1vmin;
 }
 
 @media screen and (orientation: portrait) and (max-width: 1440px) and (max-height: 3120px)
