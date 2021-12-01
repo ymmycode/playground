@@ -323,7 +323,7 @@ body
     transition: opacity 3s;
 }
 
-.close-btn
+.close-btn, .helper-close-btn
 {
     font-size: 6vmin;
     text-align: right !important;
@@ -380,7 +380,6 @@ body
 }
 
 .tool-icon
-/* , .social-icon */
 {
     opacity: 0;
 }
@@ -389,6 +388,82 @@ body
 {
     font-size: 4.5vmin;
     padding-left: 1vmin;
+}
+
+.helper-container.visible
+{
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+
+.helper-container
+{
+    position: absolute;
+    display: table;
+    width: 80%;
+    height: 83%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-107%, -90%) scale(0);
+    opacity: 0;
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.helper-mid
+{
+    display: table-cell;
+    padding-top: 5vmin;
+    padding-left: 10vmin;
+    padding-right: 10vmin;
+    background-color: #ffffff;
+    border-radius: 10%;
+}
+
+.help
+{
+    margin-top: 5vmin;
+    width: 100%;
+    height: 70%;
+    overflow: none;
+    overflow-y: scroll;
+    touch-action: auto;
+}
+
+.help-title, .help-desc
+{
+    text-align: justify;
+    line-height: 6vmin;
+}
+
+.help-title
+{
+    font-family: 'Architects Daughter', cursive;
+    font-size: 5vmin;
+}
+
+.help-desc
+{
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 3.7vmin;
+}
+
+.scroll::-webkit-scrollbar-track
+{
+    -webkit-box-shadow : inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    background-color: #f5f5f5;
+}
+
+.scroll::-webkit-scrollbar
+{
+    width: 6px;
+    background-color: #f5f5f5;
+}
+
+.scroll::-webkit-scrollbar-thumb
+{
+    border-radius: 10px;
+    background-color: #000000;
 }
 
 @media screen and (orientation: portrait) and (max-width: 1440px) and (max-height: 3120px)

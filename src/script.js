@@ -944,9 +944,32 @@ const aboutText = document.querySelector(`.about-txt`)
 const githubLinkButton = document.querySelector(`.github`)
 const twitterLinkButton = document.querySelector(`.twitter`)
 const scLinkButton = document.querySelector(`.soundcloud`)
+const uiHelper = document.querySelector(`.helper-container`)
+const uiHelperButton = document.querySelector(`.help-btn`)
+const uiHelperCloseButton = document.querySelector(`.helper-close-btn`)
 let hidePOI = false
 let musicPlay = false
+let showUIHelper = false
 
+uiHelperButton.addEventListener(`click`, ()=>
+{
+    if(showUIHelper === false)
+    {
+        uiHelper.classList.add(`visible`)
+        showUIHelper = true
+    }
+    else if(showUIHelper === true)
+    {
+        uiHelper.classList.remove(`visible`)
+        showUIHelper = false
+    }
+})
+
+uiHelperCloseButton.addEventListener(`click`, ()=>
+{
+    uiHelper.classList.remove(`visible`)
+    showUIHelper = false
+})
 
 startButton.addEventListener(`mouseover`, ()=>
 {
