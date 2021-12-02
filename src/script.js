@@ -113,7 +113,7 @@ const environmentSound = audioLoader.load(
     {
         globalSound.setBuffer(buffer)
         globalSound.setLoop(true)
-        globalSound.setVolume(3.0)
+        globalSound.setVolume(3.6)
         globalSound.play()
     }
 )
@@ -124,7 +124,7 @@ const music = audioLoader.load(
     {
         sceneMusic.setBuffer(buffer)
         // sceneMusic.setLoop(true)
-        sceneMusic.setVolume(0.4)
+        sceneMusic.setVolume(0.6)
         sceneMusic.play()
         sceneMusic.stop()
     }
@@ -138,7 +138,7 @@ const swingSqueak = audioLoader.load(
             () => {
                 globalPositionalSound.setBuffer(buffer)
                 globalPositionalSound.setLoop(true)
-                globalPositionalSound.setVolume(1.8)
+                globalPositionalSound.setVolume(1.45)
                 globalPositionalSound.setRefDistance(10)
                 globalPositionalSound.play()
             },10
@@ -667,6 +667,7 @@ const showAllPOI = ()=>
 // * RENDERER 
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
+    // logarithmicDepthBuffer: true
 })
 renderer.compile(scene, camera)
 renderer.outputEncoding = THREE.sRGBEncoding

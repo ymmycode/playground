@@ -7,6 +7,11 @@
     user-select: none !important;
 }
 
+.cursor-pointer
+{
+    cursor: pointer;
+}
+
 *
 {
     margin: 0;
