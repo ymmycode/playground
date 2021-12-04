@@ -194,15 +194,17 @@ gltfLoader.load(
             )
         }
         
-        treeLeavesGroup = gltf.scene.children[1].children.find(child => child.name === `TreeLeaves`) 
+        const floatingGround = gltf.scene.children.find(child => child.name === `Floating_Ground001`)
+        treeLeavesGroup = floatingGround.children.find(child => child.name === `TreeLeaves`) 
 
-        grassMaterial = gltf.scene.children[1].children.find(child => child.name === `GrassStylized1001`)
+        grassMaterial = floatingGround.children.find(child => child.name === `GrassStylized1001`)
         grassMaterial.material.onBeforeCompile = (shader) => 
         {
             vertexDisplacement(shader, 0.06, 0.05, `position.x`, `xz`)
         }
+        grassMaterial.material.depthWrite = false
 
-        bushMaterial = gltf.scene.children[1].children.find(child => child.name === `Bushes`)
+        bushMaterial = floatingGround.children.find(child => child.name === `Bushes`)
         bushMaterial.material.onBeforeCompile = (shader) => 
         {
             vertexDisplacement(shader, 0.035, 0.1, `position.z`, `xz`)
