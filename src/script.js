@@ -1,7 +1,7 @@
 import './style.css'
 import * as THREE from 'three'
-import * as dat from 'dat.gui'
-import Stats from 'three/examples/jsm/libs/stats.module.js'
+// import * as dat from 'dat.gui'
+// import Stats from 'three/examples/jsm/libs/stats.module.js'
 import gsap from 'gsap'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
@@ -54,11 +54,11 @@ const manager = new THREE.LoadingManager(
 ) 
 
 // * DEBUG GUI
-const gui = new dat.GUI()
+// const gui = new dat.GUI()
 
 // * Stats
-const statsPanel = new Stats()
-statsPanel.showPanel(2)
+// const statsPanel = new Stats()
+// statsPanel.showPanel(2)
 // document.body.appendChild(statsPanel.dom)
 
 // * DOM
@@ -776,7 +776,7 @@ const update = (time) =>
         camera.updateProjectionMatrix()
     }
 
-    gui.updateDisplay()
+    // gui.updateDisplay()
 
     // Control Update
     control.update()
@@ -801,7 +801,7 @@ const update = (time) =>
     effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
     // Stats Panel
-    statsPanel.update()
+    // statsPanel.update()
 
     // update frame
     requestAnimationFrame(update)
@@ -1076,7 +1076,7 @@ twitterLinkButton.addEventListener(`click`, ()=>
 
 scLinkButton.addEventListener(`click`, ()=>
 {
-    window.open(`https://soundcloud.com/mstrdpiece`, `_blank`).focus()
+    window.open(`https://soundcloud.com/mstrdp`, `_blank`).focus()
 })
 
 startButton.addEventListener(`click`, ()=>
@@ -1308,75 +1308,76 @@ const toggleForceLandscapeFullscreen = ()=>
 fullscreenButton.addEventListener(`click`, toggleForceLandscapeFullscreen)
 
 // * DEBUG
-const cameraConfig = gui.addFolder(`camera config`)
-cameraConfig.open()
+// ! remove comment
+// const cameraConfig = gui.addFolder(`camera config`)
+// cameraConfig.open()
 
-cameraConfig
-.add(uniforms.transitionValue, `value`).name(`transition value`)
-.min(0).max(1.5).step(0.001)
+// cameraConfig
+// .add(uniforms.transitionValue, `value`).name(`transition value`)
+// .min(0).max(1.5).step(0.001)
 
-cameraConfig
-.add(uniforms.transition2Value, `value`).name(`transition 2 value`)
-.min(0).max(1).step(0.001)
+// cameraConfig
+// .add(uniforms.transition2Value, `value`).name(`transition 2 value`)
+// .min(0).max(1).step(0.001)
 
-cameraConfig
-.add(camera.position, `x`).name(`camera x`)
-.min(-100).max(100).step(0.001)
+// cameraConfig
+// .add(camera.position, `x`).name(`camera x`)
+// .min(-100).max(100).step(0.001)
 
-cameraConfig
-.add(camera.position, `y`).name(`camera y`)
-.min(-100).max(100).step(0.001)
+// cameraConfig
+// .add(camera.position, `y`).name(`camera y`)
+// .min(-100).max(100).step(0.001)
 
-cameraConfig
-.add(camera.position, `z`).name(`camera z`)
-.min(-100).max(100).step(0.001)
+// cameraConfig
+// .add(camera.position, `z`).name(`camera z`)
+// .min(-100).max(100).step(0.001)
 
-cameraConfig
-.add(point.position, `x`).name(`look point x`)
-.min(-20).max(20).step(0.001)
+// cameraConfig
+// .add(point.position, `x`).name(`look point x`)
+// .min(-20).max(20).step(0.001)
 
-cameraConfig
-.add(point.position, `y`).name(`look point y`)
-.min(-20).max(20).step(0.001)
+// cameraConfig
+// .add(point.position, `y`).name(`look point y`)
+// .min(-20).max(20).step(0.001)
 
-cameraConfig
-.add(point.position, `z`).name(`look point z`)
-.min(-20).max(20).step(0.001)
+// cameraConfig
+// .add(point.position, `z`).name(`look point z`)
+// .min(-20).max(20).step(0.001)
 
-cameraConfig
-.add(control.target, `x`).name(`target point x`)
-.min(-20).max(20).step(0.001)
+// cameraConfig
+// .add(control.target, `x`).name(`target point x`)
+// .min(-20).max(20).step(0.001)
 
-cameraConfig
-.add(control.target, `y`).name(`target point y`)
-.min(-20).max(20).step(0.001)
+// cameraConfig
+// .add(control.target, `y`).name(`target point y`)
+// .min(-20).max(20).step(0.001)
 
-cameraConfig
-.add(control.target, `z`).name(`target point z`)
-.min(-20).max(20).step(0.001)
+// cameraConfig
+// .add(control.target, `z`).name(`target point z`)
+// .min(-20).max(20).step(0.001)
 
-const lightConfig = gui.addFolder(`light Config`)
+// const lightConfig = gui.addFolder(`light Config`)
 
-lightConfig
-.add(configParam, `animationSpeed`).name(`Animation Speed`)
-.min(0.1).max(3).step(0.001)
+// lightConfig
+// .add(configParam, `animationSpeed`).name(`Animation Speed`)
+// .min(0.1).max(3).step(0.001)
 
-lightConfig
-.add(ambientLight, `intensity`).name(`Ambient Light Intensity`)
-.min(0.1).max(3).step(0.001)
+// lightConfig
+// .add(ambientLight, `intensity`).name(`Ambient Light Intensity`)
+// .min(0.1).max(3).step(0.001)
 
-lightConfig
-.add(sunLight, `intensity`).name(`Sun Light Intensity`)
-.min(0.1).max(3).step(0.001)
+// lightConfig
+// .add(sunLight, `intensity`).name(`Sun Light Intensity`)
+// .min(0.1).max(3).step(0.001)
 
-lightConfig
-.add(bloomPass, `strength`).name(`Bloom Strength`)
-.min(0).max(1).step(0.001)
+// lightConfig
+// .add(bloomPass, `strength`).name(`Bloom Strength`)
+// .min(0).max(1).step(0.001)
 
-const folder = gui.addFolder('FilmPass')
-folder.add(filmPass.uniforms.grayscale, 'value').name('grayscale')
-folder.add(filmPass.uniforms.nIntensity, 'value', 0, 1).name('noise intensity')
-folder.add(filmPass.uniforms.sIntensity, 'value', 0, 1).name('scanline intensity')
-folder.add(filmPass.uniforms.sCount, 'value', 0, 1000).name('scanline count')
+// const folder = gui.addFolder('FilmPass')
+// folder.add(filmPass.uniforms.grayscale, 'value').name('grayscale')
+// folder.add(filmPass.uniforms.nIntensity, 'value', 0, 1).name('noise intensity')
+// folder.add(filmPass.uniforms.sIntensity, 'value', 0, 1).name('scanline intensity')
+// folder.add(filmPass.uniforms.sCount, 'value', 0, 1000).name('scanline count')
 
-gui.hide()
+// gui.hide()
